@@ -1,23 +1,22 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
 import type { Link } from '@/lib/db';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Copy, Check, BarChart2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export function LinkCard({ link }: { link: Link }) {
   const [copied, setCopied] = useState(false);
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setBaseUrl(window.location.origin);
-    }
+    // This effect runs only on the client-side after hydration
+    setBaseUrl(window.location.origin);
   }, []);
 
-  const shortUrl = `${baseUrl}/${link.shortCode}`;
+  // Ensure baseUrl is available before constructing the shortUrl
+  const shortUrl = baseUrl ? `${baseUrl}/${link.shortCode}` : '';
 
   const handleCopy = () => {
     if (!shortUrl) return;
@@ -35,9 +34,9 @@ export function LinkCard({ link }: { link: Link }) {
       <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-muted/50 p-4 rounded-b-lg">
         <div className="flex items-center gap-4">
           <a href={shortUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-base text-primary hover:underline break-all">
-            {baseUrl ? shortUrl.replace(/^https?:\/\//, '') : 'Loading...'}
+            {shortUrl ? shortUrl.replace(/^https?:\/\//, '') : 'Generating link...'}
           </a>
-          <Button size="icon" variant="ghost" onClick={handleCopy} disabled={!baseUrl}>
+          <Button size="icon" variant="ghost" onClick={handleCopy} disabled={!shortUrl}>
             {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
             <span className="sr-only">Copy link</span>
           </Button>

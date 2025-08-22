@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "LinkMagik",
-  description: "Shorten URLs with a touch of AI magic.",
+  description: "A simple URL shortener.",
 };
 
 export default function RootLayout({
