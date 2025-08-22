@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_BASE_URL: process.env.NODE_ENV === 'production' 
-      ? 'https://your-production-domain.com' 
+      ? `https://${process.env.APP_HOSTING_SITE_ID}.web.app`
       : 'http://localhost:9002',
   }
 };
