@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 import { shortenUrl, type ShortenState } from '@/lib/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -31,7 +32,7 @@ function SubmitButton() {
 }
 
 export function UrlShortenerForm() {
-  const [state, formAction] = useFormState(shortenUrl, initialState);
+  const [state, formAction] = useActionState(shortenUrl, initialState);
   const [shortUrl, setShortUrl] = useState<string | undefined>(undefined);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
