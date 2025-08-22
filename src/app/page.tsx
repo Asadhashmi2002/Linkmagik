@@ -11,7 +11,7 @@ export default function Home() {
             LinkMagik
           </h1>
           <p className="mt-3 text-lg text-muted-foreground md:text-xl">
-            A simple URL shortener with ad monetization.
+            A simple URL shortener with a two-page ad flow.
           </p>
         </header>
 

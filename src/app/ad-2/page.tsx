@@ -4,10 +4,10 @@ import { Suspense } from 'react';
 // Using Suspense to handle client-side nature of URL search parameters
 function AdPageContent() {
     return <AdFlowPage
-        pageNum={1}
-        title="Please wait... (Step 1 of 2)"
-        adText="Your Ad Here (Page 1)"
-        redirectUrl="/ad-2"
+        pageNum={2}
+        title="Please wait... (Step 2 of 2)"
+        adText="Your Ad Here (Page 2)"
+        isFinalRedirect={true}
     />;
 }
 
