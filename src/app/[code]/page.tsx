@@ -8,6 +8,7 @@ type Props = {
   };
 };
 
+// Dynamic route handler for short URLs - forces Vercel to recognize this route
 export default async function RedirectPage({ params }: Props) {
   const { code } = params;
 
