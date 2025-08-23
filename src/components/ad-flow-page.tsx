@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import MonetagAd from './monetag-ad';
 
 type AdFlowPageProps = {
     pageNum: number;
@@ -15,6 +16,17 @@ export default function AdFlowPage({ pageNum, title, adText, redirectUrl, isFina
     const searchParams = useSearchParams();
     const destinationUrl = searchParams.get('destination');
     const [countdown, setCountdown] = useState(10);
+
+    // Placeholder for Monetag ad codes - replace with your actual ad codes
+    const interstitialAdCode = `
+        // Replace this with your Monetag Interstitial ad code
+        // Example: <script>...</script>
+    `;
+
+    const popunderAdCode = `
+        // Replace this with your Monetag Onclick (Popunder) ad code
+        // Example: <script>...</script>
+    `;
 
     useEffect(() => {
         if (!destinationUrl) return;
@@ -56,15 +68,27 @@ export default function AdFlowPage({ pageNum, title, adText, redirectUrl, isFina
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center px-4">
+            {/* Interstitial Ad */}
             <div className="w-full max-w-3xl mb-8 p-4 bg-gray-200 border border-gray-300 rounded-lg shadow-md">
-                 {/* This is a placeholder for your ad. */}
-                <div className="bg-gray-300 min-h-24 flex items-center justify-center text-gray-500 p-4">
-                    {adText}
-                </div>
+                <MonetagAd 
+                    adCode={interstitialAdCode}
+                    className="min-h-24 flex items-center justify-center"
+                />
+                {!interstitialAdCode.includes('<script>') && (
+                    <div className="bg-gray-300 min-h-24 flex items-center justify-center text-gray-500 p-4">
+                        {adText}
+                    </div>
+                )}
             </div>
+            
             <p className="text-xl text-gray-800">
                 { pageNum === 1 ? 'Please wait' : 'You will be redirected in' } <span className="font-bold text-primary">{countdown}</span> seconds...
             </p>
+
+            {/* Popunder Ad - Hidden but will trigger on page load */}
+            <div style={{ display: 'none' }}>
+                <MonetagAd adCode={popunderAdCode} />
+            </div>
         </div>
     );
 }
