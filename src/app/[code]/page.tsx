@@ -4,15 +4,16 @@ import { notFound } from 'next/navigation';
 
 type Props = {
   params: {
-    code: string[];
+    code: string;
   };
 };
 
 export default async function RedirectPage({ params }: Props) {
-  const code = params.code[0]; // Get the first segment
+  const { code } = params;
 
   console.log(`Processing redirect for code: ${code}`);
 
+  // Prevent redirect loops for our ad pages
   if (code === 'ad' || code === 'ad-2') {
     console.log(`Preventing redirect loop for ad page: ${code}`);
     return notFound();
