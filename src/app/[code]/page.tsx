@@ -13,6 +13,16 @@ export default async function RedirectPage({ params }: Props) {
 
   console.log(`Processing redirect for code: ${code}`);
 
+  // TEMPORARY: Return a simple page to test if route is working
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Dynamic Route Test</h1>
+      <p>Code: {code}</p>
+      <p>This page should work if the dynamic route is properly deployed.</p>
+      <p>If you see this, the route is working!</p>
+    </div>
+  );
+
   // Prevent redirect loops for our ad pages
   if (code === 'ad' || code === 'ad-2') {
     console.log(`Preventing redirect loop for ad page: ${code}`);
