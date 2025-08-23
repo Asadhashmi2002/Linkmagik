@@ -4,13 +4,12 @@ import { notFound } from 'next/navigation';
 
 type Props = {
   params: {
-    code: string;
+    code: string[];
   };
 };
 
-// Dynamic route handler for short URLs - forces Vercel to recognize this route
 export default async function RedirectPage({ params }: Props) {
-  const { code } = params;
+  const code = params.code[0]; // Get the first segment
 
   console.log(`Processing redirect for code: ${code}`);
 
