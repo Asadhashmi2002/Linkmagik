@@ -8,7 +8,7 @@ type AdFlowPageProps = {
     pageNum: number;
     title: string;
     adText: string;
-    redirectUrl?: string; // URL for the next step, if not the final redirect
+    redirectUrl?: string;
     isFinalRedirect?: boolean;
 }
 
@@ -17,14 +17,19 @@ export default function AdFlowPage({ pageNum, title, adText, redirectUrl, isFina
     const destinationUrl = searchParams.get('destination');
     const [countdown, setCountdown] = useState(10);
 
-    // Placeholder for Monetag ad codes - replace with your actual ad codes
-    const interstitialAdCode = `
-        // Replace this with your Monetag Interstitial ad code
-        // Example: <script>...</script>
-    `;
-
+    // Multiple ad codes for maximum revenue
     const popunderAdCode = `
         <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9760082,document.createElement('script'))</script>
+    `;
+
+    const bannerAdCode = `
+        // Replace with your Monetag Banner ad code
+        // <script>...</script>
+    `;
+
+    const pushNotificationAdCode = `
+        // Replace with your Monetag Push Notification ad code
+        // <script>...</script>
     `;
 
     useEffect(() => {
@@ -58,35 +63,66 @@ export default function AdFlowPage({ pageNum, title, adText, redirectUrl, isFina
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center px-4">
                 <h1 className="text-2xl font-bold text-red-600">Redirection Error</h1>
-                <p className="mt-2 text-lg text-gray-700">
-                    The destination URL is missing.
-                </p>
+                <p className="mt-2 text-lg text-gray-700">The destination URL is missing.</p>
             </div>
         )
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center px-4">
-            {/* Interstitial Ad */}
-            <div className="w-full max-w-3xl mb-8 p-4 bg-gray-200 border border-gray-300 rounded-lg shadow-md">
-                <MonetagAd 
-                    adCode={interstitialAdCode}
-                    className="min-h-24 flex items-center justify-center"
-                />
-                {!interstitialAdCode.includes('<script>') && (
-                    <div className="bg-gray-300 min-h-24 flex items-center justify-center text-gray-500 p-4">
-                        {adText}
-                    </div>
+        <div className="min-h-screen bg-gray-100">
+            {/* Top Banner */}
+            <div className="w-full bg-white border-b border-gray-300 p-2">
+                <MonetagAd adCode={bannerAdCode} className="h-16 flex items-center justify-center" />
+                {!bannerAdCode.includes('<script>') && (
+                    <div className="h-16 bg-gray-200 flex items-center justify-center text-gray-500">Top Banner Ad</div>
                 )}
             </div>
-            
-            <p className="text-xl text-gray-800">
-                { pageNum === 1 ? 'Please wait' : 'You will be redirected in' } <span className="font-bold text-primary">{countdown}</span> seconds...
-            </p>
 
-            {/* Popunder Ad - Hidden but will trigger on page load */}
+            {/* Main Content */}
+            <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 py-8">
+                {/* Left Sidebar */}
+                <div className="fixed left-0 top-1/2 transform -translate-y-1/2 w-32 h-64 bg-white border border-gray-300">
+                    <MonetagAd adCode={bannerAdCode} className="h-full flex items-center justify-center" />
+                    {!bannerAdCode.includes('<script>') && (
+                        <div className="h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">Left Sidebar Ad</div>
+                    )}
+                </div>
+
+                {/* Right Sidebar */}
+                <div className="fixed right-0 top-1/2 transform -translate-y-1/2 w-32 h-64 bg-white border border-gray-300">
+                    <MonetagAd adCode={bannerAdCode} className="h-full flex items-center justify-center" />
+                    {!bannerAdCode.includes('<script>') && (
+                        <div className="h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">Right Sidebar Ad</div>
+                    )}
+                </div>
+
+                {/* Center Main Ad */}
+                <div className="w-full max-w-4xl mb-8 p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+                    <MonetagAd adCode={bannerAdCode} className="min-h-48 flex items-center justify-center" />
+                    {!bannerAdCode.includes('<script>') && (
+                        <div className="min-h-48 bg-gray-200 flex items-center justify-center text-gray-500">{adText}</div>
+                    )}
+                </div>
+
+                {/* Bottom Banner */}
+                <div className="w-full max-w-4xl mb-8 p-2 bg-white border border-gray-300 rounded">
+                    <MonetagAd adCode={bannerAdCode} className="h-20 flex items-center justify-center" />
+                    {!bannerAdCode.includes('<script>') && (
+                        <div className="h-20 bg-gray-200 flex items-center justify-center text-gray-500">Bottom Banner Ad</div>
+                    )}
+                </div>
+                
+                <p className="text-xl text-gray-800 z-10 relative">
+                    { pageNum === 1 ? 'Please wait' : 'You will be redirected in' } <span className="font-bold text-primary">{countdown}</span> seconds...
+                </p>
+            </div>
+
+            {/* Hidden Multiple Ads */}
             <div style={{ display: 'none' }}>
                 <MonetagAd adCode={popunderAdCode} />
+                <MonetagAd adCode={popunderAdCode} />
+                <MonetagAd adCode={pushNotificationAdCode} />
+                <MonetagAd adCode={pushNotificationAdCode} />
             </div>
         </div>
     );
