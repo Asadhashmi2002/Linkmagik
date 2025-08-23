@@ -11,7 +11,15 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_BASE_URL: process.env.NODE_ENV === 'production' 
       ? 'https://makeurl.shop'
       : 'http://localhost:9002',
-  }
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/:code([0-9a-zA-Z]+)',
+        destination: '/[code]',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
