@@ -13,12 +13,6 @@ export default async function RedirectPage({ params }: Props) {
 
   console.log(`Processing redirect for code: ${code}`);
 
-  // Prevent redirect loops for our ad pages
-  if (code === 'ad' || code === 'ad-2' || code === 's') {
-    console.log(`Preventing redirect loop for ad page: ${code}`);
-    return notFound();
-  }
-
   try {
     console.log(`Looking up link in database for code: ${code}`);
     const link = await getLinkByCode(code);
