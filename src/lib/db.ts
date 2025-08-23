@@ -4,9 +4,13 @@ import { Pool } from 'pg';
 let pool: Pool | null = null;
 
 if (process.env.POSTGRES_URL) {
+  // Check if this is a local connection (localhost or 127.0.0.1)
+  const isLocalConnection = process.env.POSTGRES_URL.includes('localhost') || 
+                           process.env.POSTGRES_URL.includes('127.0.0.1');
+  
   pool = new Pool({
     connectionString: process.env.POSTGRES_URL,
-    ssl: {
+    ssl: isLocalConnection ? false : {
       rejectUnauthorized: false
     }
   });

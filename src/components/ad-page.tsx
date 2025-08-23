@@ -14,15 +14,9 @@ export default function AdPage() {
         <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9760082,document.createElement('script'))</script>
     `;
 
-    const bannerAdCode = `
-        // Replace with your Monetag Banner ad code
-        // <script>...</script>
-    `;
+    const bannerAdCode = ``;
 
-    const pushNotificationAdCode = `
-        // Replace with your Monetag Push Notification ad code
-        // <script>...</script>
-    `;
+    const pushNotificationAdCode = ``;
 
     useEffect(() => {
         if (!destinationUrl) return;

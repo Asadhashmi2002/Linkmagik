@@ -23,7 +23,7 @@ export function LinkCard({ link, onDelete }: LinkCardProps) {
   }, []);
 
   // Ensure baseUrl is available before constructing the shortUrl
-  const shortUrl = baseUrl ? `${baseUrl}/redirect/${link.shortCode}` : '';
+  const shortUrl = baseUrl ? `${baseUrl}/api/redirect/${link.shortCode}` : '';
 
   const handleCopy = () => {
     if (!shortUrl) return;

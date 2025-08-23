@@ -1,34 +1,34 @@
 import { getLinkByCode } from '@/lib/db';
 import { redirect } from 'next/navigation';
-import { notFound } from 'next/navigation';
 
-type Props = {
-  params: {
-    code: string;
-  };
-};
-
-export default async function RedirectPage({ params }: Props) {
-  const { code } = params;
-
-  console.log(`Processing redirect for code: ${code}`);
+export default async function RedirectPage({ params }: { params: { code: string } }) {
+  const { code } = await params;
 
   try {
-    console.log(`Looking up link in database for code: ${code}`);
     const link = await getLinkByCode(code);
 
     if (link) {
-      console.log(`Found link:`, link);
+      // Use Next.js redirect for server-side redirects
       const destination = encodeURIComponent(link.longUrl);
       const redirectUrl = `/ad?destination=${destination}`;
-      console.log(`Redirecting to: ${redirectUrl}`);
       redirect(redirectUrl);
     } else {
-      console.log(`Link not found for code: ${code}`);
-      notFound();
+      // If link not found, show error page
+      return (
+        <div className="p-8">
+          <h1 className="text-2xl font-bold">Link Not Found</h1>
+          <p>Code: {code}</p>
+          <p>This short link does not exist.</p>
+        </div>
+      );
     }
   } catch (error) {
     console.error(`Error processing redirect for code ${code}:`, error);
-    notFound();
+    return (
+      <div className="p-8">
+        <h1 className="text-2xl font-bold">Error</h1>
+        <p>An error occurred while processing your request.</p>
+      </div>
+    );
   }
 }
