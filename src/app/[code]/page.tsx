@@ -19,9 +19,13 @@ export default async function RedirectPage({ params }: Props) {
   const link = await getLinkByCode(code);
 
   if (link) {
-    // Redirect to the first interstitial ad page, passing the final destination as a query parameter.
-    const destination = encodeURIComponent(link.longUrl);
-    redirect(`/ad?destination=${destination}`);
+    // Temporarily redirect directly to destination for testing
+    // TODO: Uncomment the ad flow redirect after testing
+    // const destination = encodeURIComponent(link.longUrl);
+    // redirect(`/ad?destination=${destination}`);
+    
+    // Direct redirect for testing
+    redirect(link.longUrl);
   } else {
     notFound();
   }
