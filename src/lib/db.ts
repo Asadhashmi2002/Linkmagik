@@ -1,4 +1,12 @@
-import { sql } from '@vercel/postgres';
+import { Pool } from 'pg';
+
+// Create a connection pool
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 export interface Link {
   id: number;
@@ -23,11 +31,11 @@ function encode(id: number): string {
 
 export const getLinks = async (): Promise<Link[]> => {
   try {
-    const { rows } = await sql`
+    const { rows } = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
       FROM links 
       ORDER BY created_at DESC
-    `;
+    `);
     
     return rows.map(row => ({
       id: row.id,
@@ -46,11 +54,11 @@ export const getLinks = async (): Promise<Link[]> => {
 export const createLink = async (longUrl: string, description: string): Promise<Link> => {
   try {
     // Check if link already exists
-    const existingResult = await sql`
+    const existingResult = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
       FROM links 
-      WHERE long_url = ${longUrl}
-    `;
+      WHERE long_url = $1
+    `, [longUrl]);
     
     if (existingResult.rows.length > 0) {
       const existing = existingResult.rows[0];
@@ -65,16 +73,16 @@ export const createLink = async (longUrl: string, description: string): Promise<
     }
 
     // Get the next ID for encoding
-    const idResult = await sql`SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM links`;
+    const idResult = await pool.query('SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM links');
     const nextId = idResult.rows[0].next_id;
     const shortCode = encode(nextId);
 
     // Insert new link
-    const result = await sql`
+    const result = await pool.query(`
       INSERT INTO links (long_url, short_code, description)
-      VALUES (${longUrl}, ${shortCode}, ${description})
+      VALUES ($1, $2, $3)
       RETURNING id, long_url, short_code, description, clicks, created_at
-    `;
+    `, [longUrl, shortCode, description]);
 
     const newLink = result.rows[0];
     return {
@@ -94,11 +102,11 @@ export const createLink = async (longUrl: string, description: string): Promise<
 export const getLinkByCode = async (shortCode: string): Promise<Link | undefined> => {
   try {
     // First, get the link
-    const result = await sql`
+    const result = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
       FROM links 
-      WHERE short_code = ${shortCode}
-    `;
+      WHERE short_code = $1
+    `, [shortCode]);
 
     if (result.rows.length === 0) {
       return undefined;
@@ -107,11 +115,11 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
     const link = result.rows[0];
 
     // Increment clicks
-    await sql`
+    await pool.query(`
       UPDATE links 
       SET clicks = clicks + 1 
-      WHERE id = ${link.id}
-    `;
+      WHERE id = $1
+    `, [link.id]);
 
     return {
       id: link.id,
