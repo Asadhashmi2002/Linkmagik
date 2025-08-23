@@ -10,7 +10,9 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_BASE_URL: process.env.NODE_ENV === 'production' 
-      ? `https://${process.env.APP_HOSTING_SITE_ID}.web.app`
+      ? process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}`
+        : process.env.NEXT_PUBLIC_BASE_URL
       : 'http://localhost:9002',
   }
 };

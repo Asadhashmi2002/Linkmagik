@@ -1,10 +1,4 @@
-import * as fs from 'fs/promises';
-import * as path from 'path';
-
-// Note: In a serverless environment like Vercel, the file system is ephemeral.
-// This means the links.json file will be reset on each new deployment or server restart.
-// For persistent storage, a database (like Vercel Postgres, Supabase) or a service like Upstash Redis would be required.
-const dbPath = path.join(process.cwd(), 'links.json');
+import { sql } from '@vercel/postgres';
 
 export interface Link {
   id: number;
@@ -15,35 +9,7 @@ export interface Link {
   createdAt: Date;
 }
 
-interface LinkData {
-    links: Link[];
-    idCounter: number;
-}
-
 const base62Chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-async function readDb(): Promise<LinkData> {
-    try {
-        const data = await fs.readFile(dbPath, 'utf-8');
-        const parsedData = JSON.parse(data);
-        // Ensure createdAt is a Date object
-        parsedData.links.forEach((link: any) => {
-            link.createdAt = new Date(link.createdAt);
-        });
-        return parsedData;
-    } catch (error: any) {
-        if (error.code === 'ENOENT') {
-            // If the file doesn't exist, initialize with default structure
-            return { links: [], idCounter: 1 };
-        }
-        throw error;
-    }
-}
-
-async function writeDb(data: LinkData) {
-    await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
-}
-
 
 function encode(id: number): string {
     if (id === 0) return base62Chars[0];
@@ -56,39 +22,107 @@ function encode(id: number): string {
 }
 
 export const getLinks = async (): Promise<Link[]> => {
-  const db = await readDb();
-  return [...db.links].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  try {
+    const { rows } = await sql`
+      SELECT id, long_url, short_code, description, clicks, created_at
+      FROM links 
+      ORDER BY created_at DESC
+    `;
+    
+    return rows.map(row => ({
+      id: row.id,
+      longUrl: row.long_url,
+      shortCode: row.short_code,
+      description: row.description || '',
+      clicks: row.clicks,
+      createdAt: new Date(row.created_at)
+    }));
+  } catch (error) {
+    console.error('Error fetching links:', error);
+    return [];
+  }
 };
 
 export const createLink = async (longUrl: string, description: string): Promise<Link> => {
-    const db = await readDb();
-
-    const existingLink = db.links.find(link => link.longUrl === longUrl);
-    if (existingLink) {
-      return existingLink;
+  try {
+    // Check if link already exists
+    const existingResult = await sql`
+      SELECT id, long_url, short_code, description, clicks, created_at
+      FROM links 
+      WHERE long_url = ${longUrl}
+    `;
+    
+    if (existingResult.rows.length > 0) {
+      const existing = existingResult.rows[0];
+      return {
+        id: existing.id,
+        longUrl: existing.long_url,
+        shortCode: existing.short_code,
+        description: existing.description || '',
+        clicks: existing.clicks,
+        createdAt: new Date(existing.created_at)
+      };
     }
 
-    const newId = db.idCounter++;
-    const newLink: Link = {
-        id: newId,
-        longUrl,
-        shortCode: encode(newId),
-        description,
-        clicks: 0,
-        createdAt: new Date(),
-    };
+    // Get the next ID for encoding
+    const idResult = await sql`SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM links`;
+    const nextId = idResult.rows[0].next_id;
+    const shortCode = encode(nextId);
 
-    db.links.push(newLink);
-    await writeDb(db);
-    return newLink;
+    // Insert new link
+    const result = await sql`
+      INSERT INTO links (long_url, short_code, description)
+      VALUES (${longUrl}, ${shortCode}, ${description})
+      RETURNING id, long_url, short_code, description, clicks, created_at
+    `;
+
+    const newLink = result.rows[0];
+    return {
+      id: newLink.id,
+      longUrl: newLink.long_url,
+      shortCode: newLink.short_code,
+      description: newLink.description || '',
+      clicks: newLink.clicks,
+      createdAt: new Date(newLink.created_at)
+    };
+  } catch (error) {
+    console.error('Error creating link:', error);
+    throw new Error('Failed to create link');
+  }
 };
 
 export const getLinkByCode = async (shortCode: string): Promise<Link | undefined> => {
-  const db = await readDb();
-  const link = db.links.find(l => l.shortCode === shortCode);
-  if(link) {
-    link.clicks++;
-    await writeDb(db);
+  try {
+    // First, get the link
+    const result = await sql`
+      SELECT id, long_url, short_code, description, clicks, created_at
+      FROM links 
+      WHERE short_code = ${shortCode}
+    `;
+
+    if (result.rows.length === 0) {
+      return undefined;
+    }
+
+    const link = result.rows[0];
+
+    // Increment clicks
+    await sql`
+      UPDATE links 
+      SET clicks = clicks + 1 
+      WHERE id = ${link.id}
+    `;
+
+    return {
+      id: link.id,
+      longUrl: link.long_url,
+      shortCode: link.short_code,
+      description: link.description || '',
+      clicks: link.clicks + 1, // Return incremented count
+      createdAt: new Date(link.created_at)
+    };
+  } catch (error) {
+    console.error('Error fetching link by code:', error);
+    return undefined;
   }
-  return link;
 };
