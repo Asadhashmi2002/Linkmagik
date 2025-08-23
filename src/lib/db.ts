@@ -151,3 +151,21 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
     return undefined;
   }
 };
+
+export const deleteLink = async (shortCode: string): Promise<boolean> => {
+  if (!pool) {
+    throw new Error('Database not connected - POSTGRES_URL not available');
+  }
+
+  try {
+    const result = await pool.query(`
+      DELETE FROM links 
+      WHERE short_code = $1
+    `, [shortCode]);
+
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error('Error deleting link:', error);
+    return false;
+  }
+};

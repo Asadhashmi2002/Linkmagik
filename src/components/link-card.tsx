@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import type { Link } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, BarChart2 } from 'lucide-react';
+import { Copy, Check, BarChart2, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function LinkCard({ link }: { link: Link }) {
   const [copied, setCopied] = useState(false);
   const [baseUrl, setBaseUrl] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // This effect runs only on the client-side after hydration
@@ -23,6 +26,31 @@ export function LinkCard({ link }: { link: Link }) {
     navigator.clipboard.writeText(shortUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm(`Are you sure you want to delete this link?\n\n${link.description}\n${shortUrl}`)) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/links/${link.shortCode}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Refresh the page to update the links list
+        router.refresh();
+      } else {
+        alert('Failed to delete link. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error deleting link:', error);
+      alert('Failed to delete link. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -41,9 +69,21 @@ export function LinkCard({ link }: { link: Link }) {
             <span className="sr-only">Copy link</span>
           </Button>
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <BarChart2 className="h-4 w-4" />
             <span>{link.clicks.toLocaleString()} clicks</span>
+          </div>
+          <Button 
+            size="icon" 
+            variant="ghost" 
+            onClick={handleDelete} 
+            disabled={isDeleting}
+            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="sr-only">Delete link</span>
+          </Button>
         </div>
       </CardContent>
     </Card>
