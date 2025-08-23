@@ -1,9 +1,35 @@
-import { getLinks } from '@/lib/db';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { LinkCard } from '@/components/link-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Link } from '@/lib/db';
 
-export async function LinksList() {
-  const links = await getLinks();
+export function LinksList() {
+  const [links, setLinks] = useState<Link[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLinks();
+  }, []);
+
+  const fetchLinks = async () => {
+    try {
+      const response = await fetch('/api/links');
+      if (response.ok) {
+        const data = await response.json();
+        setLinks(data);
+      }
+    } catch (error) {
+      console.error('Error fetching links:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <LinksListSkeleton />;
+  }
 
   if (links.length === 0) {
     return (
@@ -18,7 +44,7 @@ export async function LinksList() {
     <div className="space-y-4">
       <h2 className="font-headline text-2xl tracking-tight">Your Links</h2>
       {links.map((link) => (
-        <LinkCard key={link.id} link={link} />
+        <LinkCard key={link.id} link={link} onDelete={fetchLinks} />
       ))}
     </div>
   );
