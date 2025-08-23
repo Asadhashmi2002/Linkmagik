@@ -1,14 +1,9 @@
-import AdFlowPage from '@/components/ad-flow-page';
+import AdPage from '@/components/ad-page';
 import { Suspense } from 'react';
 
 // Using Suspense to handle client-side nature of URL search parameters
 function AdPageContent() {
-    return <AdFlowPage
-        pageNum={1}
-        title="Please wait... (Step 1 of 2)"
-        adText="Your Ad Here (Page 1)"
-        redirectUrl="/ad-2"
-    />;
+    return <AdPage />;
 }
 
 export default function Page() {
