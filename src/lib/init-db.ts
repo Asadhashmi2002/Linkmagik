@@ -1,14 +1,22 @@
 import { Pool } from 'pg';
 
-// Create a connection pool
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+// Create a connection pool only if POSTGRES_URL is available
+let pool: Pool | null = null;
+
+if (process.env.POSTGRES_URL) {
+  pool = new Pool({
+    connectionString: process.env.POSTGRES_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+}
 
 export async function initDatabase() {
+  if (!pool) {
+    throw new Error('Database not connected - POSTGRES_URL not available');
+  }
+
   try {
     // Create the links table
     await pool.query(`

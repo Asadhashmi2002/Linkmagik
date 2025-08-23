@@ -1,12 +1,16 @@
 import { Pool } from 'pg';
 
-// Create a connection pool
-const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+// Create a connection pool only if POSTGRES_URL is available
+let pool: Pool | null = null;
+
+if (process.env.POSTGRES_URL) {
+  pool = new Pool({
+    connectionString: process.env.POSTGRES_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+}
 
 export interface Link {
   id: number;
@@ -30,6 +34,11 @@ function encode(id: number): string {
 }
 
 export const getLinks = async (): Promise<Link[]> => {
+  if (!pool) {
+    console.warn('Database not connected - POSTGRES_URL not available');
+    return [];
+  }
+
   try {
     const { rows } = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
@@ -52,6 +61,10 @@ export const getLinks = async (): Promise<Link[]> => {
 };
 
 export const createLink = async (longUrl: string, description: string): Promise<Link> => {
+  if (!pool) {
+    throw new Error('Database not connected - POSTGRES_URL not available');
+  }
+
   try {
     // Check if link already exists
     const existingResult = await pool.query(`
@@ -100,6 +113,10 @@ export const createLink = async (longUrl: string, description: string): Promise<
 };
 
 export const getLinkByCode = async (shortCode: string): Promise<Link | undefined> => {
+  if (!pool) {
+    throw new Error('Database not connected - POSTGRES_URL not available');
+  }
+
   try {
     // First, get the link
     const result = await pool.query(`
