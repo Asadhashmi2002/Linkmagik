@@ -19,8 +19,7 @@ export default function AdFlowPage({ pageNum, title, adText, redirectUrl, isFina
 
     // MULTITAG - All-in-one for highest revenue
     const multitagAdCode = `
-        // Replace with your Monetag Multitag code
-        // <script>...</script>
+        <script src="https://fpyf8.com/88/tag.min.js" data-zone="165665" async data-cfasync="false"></script>
     `;
 
     // ONCLICK (Popunder) - High CPM rates
