@@ -92,11 +92,18 @@ export const getLinks = async (): Promise<Link[]> => {
 };
 
 export const createLink = async (longUrl: string, description: string): Promise<Link> => {
+  console.log('=== CREATE LINK DEBUG ===');
+  console.log('Long URL:', longUrl);
+  console.log('Description:', description);
+  console.log('Pool exists:', !!pool);
+  
   if (!pool) {
+    console.error('Database pool is null - POSTGRES_URL not available');
     throw new Error('Database not connected - POSTGRES_URL not available');
   }
 
   try {
+    console.log('Checking if link already exists...');
     // Check if link already exists
     const existingResult = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
@@ -104,8 +111,11 @@ export const createLink = async (longUrl: string, description: string): Promise<
       WHERE long_url = $1
     `, [longUrl]);
     
+    console.log('Existing result rows:', existingResult.rows.length);
+    
     if (existingResult.rows.length > 0) {
       const existing = existingResult.rows[0];
+      console.log('Found existing link:', existing);
       return {
         id: existing.id,
         longUrl: existing.long_url,
@@ -116,9 +126,12 @@ export const createLink = async (longUrl: string, description: string): Promise<
       };
     }
 
+    console.log('Generating unique short code...');
     // Generate unique random short code
     const shortCode = await generateUniqueShortCode();
+    console.log('Generated short code:', shortCode);
 
+    console.log('Inserting new link into database...');
     // Insert new link
     const result = await pool.query(`
       INSERT INTO links (long_url, short_code, description)
@@ -126,6 +139,7 @@ export const createLink = async (longUrl: string, description: string): Promise<
       RETURNING id, long_url, short_code, description, clicks, created_at
     `, [longUrl, shortCode, description]);
 
+    console.log('Insert result:', result.rows[0]);
     const newLink = result.rows[0];
     return {
       id: newLink.id,
@@ -137,6 +151,7 @@ export const createLink = async (longUrl: string, description: string): Promise<
     };
   } catch (error) {
     console.error('Error creating link:', error);
+    console.error('Error details:', error);
     throw new Error('Failed to create link');
   }
 };
