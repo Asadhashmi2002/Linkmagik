@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { LinkCard } from './link-card';
+import { useToast } from '@/hooks/use-toast';
 import type { Link } from '@/lib/db';
 
 export function LinksList() {
   const [links, setLinks] = useState<Link[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchLinks();
@@ -26,16 +28,28 @@ export function LinksList() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (shortCode: string) => {
     try {
-      const response = await fetch(`/api/links/${id}`, {
+      const response = await fetch(`/api/links/${shortCode}`, {
         method: 'DELETE',
       });
       if (response.ok) {
-        setLinks(links.filter(link => link.id !== id));
+        // Remove the deleted link from the state immediately
+        setLinks(links.filter(link => link.shortCode !== shortCode));
+        toast({
+          title: "Success!",
+          description: "Link deleted successfully",
+        });
+      } else {
+        throw new Error('Failed to delete link');
       }
     } catch (error) {
       console.error('Error deleting link:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete link",
+        variant: "destructive",
+      });
     }
   };
 
@@ -72,7 +86,7 @@ export function LinksList() {
         <LinkCard 
           key={link.id} 
           link={link} 
-          onDelete={() => handleDelete(link.id)}
+          onDelete={() => handleDelete(link.shortCode)}
         />
       ))}
     </div>

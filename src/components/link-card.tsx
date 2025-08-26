@@ -43,28 +43,12 @@ export function LinkCard({ link, onDelete }: LinkCardProps) {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/links/${link.shortCode}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        onDelete();
-        toast({
-          title: "Deleted!",
-          description: "Link deleted successfully",
-        });
-      } else {
-        throw new Error('Failed to delete link');
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete link",
-        variant: "destructive",
-      });
-    }
+  const handleDelete = () => {
+    onDelete();
+    toast({
+      title: "Deleted!",
+      description: "Link deleted successfully",
+    });
     setShowDeleteDialog(false);
   };
 
