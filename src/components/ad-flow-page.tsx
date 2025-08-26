@@ -37,7 +37,7 @@ export default function AdFlowPage({ pageNum, title, adText, redirectUrl, isFina
 
     const handleContinue = () => {
         if (destinationUrl && isFinalRedirect) {
-            window.location.href = destinationUrl;
+                        window.location.href = destinationUrl;
         }
     };
 

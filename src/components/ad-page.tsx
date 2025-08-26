@@ -120,21 +120,6 @@ export default function AdPage() {
 
             {/* Main Content */}
             <div className="container mx-auto px-4 py-8">
-                {/* Top Skip Button - Initially disabled */}
-                <div className="text-center mb-6">
-                    <button 
-                        onClick={handleSkip}
-                        disabled={!skipEnabled}
-                        className={`px-6 py-2 rounded-lg font-medium transition-all duration-300 ${
-                            skipEnabled 
-                                ? 'bg-gray-500 hover:bg-gray-600 text-white cursor-pointer' 
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
-                    >
-                        {skipText}
-                    </button>
-                </div>
-
                 {/* High-Paying Ad 1 - Responsive Display Ad */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
                     <div className="w-full h-90 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
@@ -340,6 +325,27 @@ export default function AdPage() {
                                 <p className="text-gray-500">Loading content...</p>
                             </div>
                         )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer with Subtle Skip Button */}
+            <div className="bg-gray-50 border-t mt-12">
+                <div className="container mx-auto px-4 py-4">
+                    <div className="flex justify-between items-center">
+                        <div className="text-sm text-gray-500">
+                            © 2024 LinkMagik. All rights reserved.
+                        </div>
+                        <div className="text-right">
+                            {skipEnabled && (
+                                <button 
+                                    onClick={handleSkip}
+                                    className="text-xs text-gray-400 hover:text-gray-600 underline transition-colors duration-300"
+                                >
+                                    {skipText}
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
