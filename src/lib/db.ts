@@ -142,11 +142,18 @@ export const createLink = async (longUrl: string, description: string): Promise<
 };
 
 export const getLinkByCode = async (shortCode: string): Promise<Link | undefined> => {
+  console.log('=== GET LINK BY CODE DEBUG ===');
+  console.log('Short code:', shortCode);
+  console.log('Pool exists:', !!pool);
+  
   if (!pool) {
+    console.error('Database pool is null - POSTGRES_URL not available');
     throw new Error('Database not connected - POSTGRES_URL not available');
   }
 
   try {
+    console.log('Executing database query for short code:', shortCode);
+    
     // First, get the link
     const result = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
@@ -154,11 +161,16 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
       WHERE short_code = $1
     `, [shortCode]);
 
+    console.log('Query result rows:', result.rows.length);
+    console.log('Query result:', result.rows);
+
     if (result.rows.length === 0) {
+      console.log('No link found for short code:', shortCode);
       return undefined;
     }
 
     const link = result.rows[0];
+    console.log('Found link:', link);
 
     // Increment clicks
     await pool.query(`
@@ -166,6 +178,8 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
       SET clicks = clicks + 1 
       WHERE id = $1
     `, [link.id]);
+
+    console.log('Clicks incremented successfully');
 
     return {
       id: link.id,
@@ -177,6 +191,7 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
     };
   } catch (error) {
     console.error('Error fetching link by code:', error);
+    console.error('Error details:', error);
     return undefined;
   }
 };
