@@ -30,6 +30,8 @@ export default function RootLayout({
       <body className="font-body antialiased bg-background text-foreground">
         {children}
         <Toaster />
+        {/* Popunder Ad Code */}
+        <script src="https://fpyf8.com/88/tag.min.js" data-zone="165665" async data-cfasync="false"></script>
       </body>
     </html>
   );
