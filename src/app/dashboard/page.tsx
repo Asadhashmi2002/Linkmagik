@@ -3,51 +3,55 @@
 import { UrlShortenerForm } from "@/components/url-shortener-form";
 import { LinksList, LinksListSkeleton } from "@/components/links-list";
 import { Suspense, useEffect, useRef } from "react";
-import anime from 'animejs/lib/anime.es.js';
-
 export default function Dashboard() {
   const headerRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Animate header elements
-    anime.timeline()
-      .add({
-        targets: headerRef.current?.querySelector('h1'),
-        translateY: [-50, 0],
+    const animateElements = async () => {
+      const animeModule = await import('animejs');
+      const anime = (animeModule as any).default || animeModule;
+      
+      // Animate header elements
+      anime.timeline()
+        .add({
+          targets: headerRef.current?.querySelector('h1'),
+          translateY: [-50, 0],
+          opacity: [0, 1],
+          duration: 800,
+          easing: 'easeOutElastic(1, .8)'
+        })
+        .add({
+          targets: headerRef.current?.querySelector('p'),
+          translateY: [30, 0],
+          opacity: [0, 1],
+          duration: 600,
+          easing: 'easeOutQuart'
+        }, '-=400');
+
+      // Animate stats cards
+      anime({
+        targets: statsRef.current?.querySelectorAll('.stat-card'),
+        translateX: [100, 0],
         opacity: [0, 1],
         duration: 800,
-        easing: 'easeOutElastic(1, .8)'
-      })
-      .add({
-        targets: headerRef.current?.querySelector('p'),
-        translateY: [30, 0],
-        opacity: [0, 1],
-        duration: 600,
+        delay: anime.stagger(200),
         easing: 'easeOutQuart'
-      }, '-=400');
+      });
 
-    // Animate stats cards
-    anime({
-      targets: statsRef.current?.querySelectorAll('.stat-card'),
-      translateX: [100, 0],
-      opacity: [0, 1],
-      duration: 800,
-      delay: anime.stagger(200),
-      easing: 'easeOutQuart'
-    });
+      // Animate form
+      anime({
+        targets: formRef.current,
+        translateY: [50, 0],
+        opacity: [0, 1],
+        duration: 1000,
+        delay: 400,
+        easing: 'easeOutQuart'
+      });
+    };
 
-    // Animate form
-    anime({
-      targets: formRef.current,
-      translateY: [50, 0],
-      opacity: [0, 1],
-      duration: 1000,
-      delay: 400,
-      easing: 'easeOutQuart'
-    });
-
+    animateElements();
   }, []);
 
   return (
