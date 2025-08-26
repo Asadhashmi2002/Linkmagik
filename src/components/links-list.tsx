@@ -80,8 +80,8 @@ export function LinksList() {
     );
   }
 
-  return (
-    <div className="space-y-3 max-h-96 overflow-y-auto">
+            return (
+            <div className="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
       {links.map((link) => (
         <LinkCard 
           key={link.id} 

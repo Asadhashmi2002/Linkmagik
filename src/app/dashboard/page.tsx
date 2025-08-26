@@ -2,57 +2,8 @@
 
 import { UrlShortenerForm } from "@/components/url-shortener-form";
 import { LinksList, LinksListSkeleton } from "@/components/links-list";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense } from "react";
 export default function Dashboard() {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const animateElements = async () => {
-      const animeModule = await import('animejs');
-      const anime = (animeModule as any).default || animeModule;
-      
-      // Animate header elements
-      anime.timeline()
-        .add({
-          targets: headerRef.current?.querySelector('h1'),
-          translateY: [-50, 0],
-          opacity: [0, 1],
-          duration: 800,
-          easing: 'easeOutElastic(1, .8)'
-        })
-        .add({
-          targets: headerRef.current?.querySelector('p'),
-          translateY: [30, 0],
-          opacity: [0, 1],
-          duration: 600,
-          easing: 'easeOutQuart'
-        }, '-=400');
-
-      // Animate stats cards
-      anime({
-        targets: statsRef.current?.querySelectorAll('.stat-card'),
-        translateX: [100, 0],
-        opacity: [0, 1],
-        duration: 800,
-        delay: anime.stagger(200),
-        easing: 'easeOutQuart'
-      });
-
-      // Animate form
-      anime({
-        targets: formRef.current,
-        translateY: [50, 0],
-        opacity: [0, 1],
-        duration: 1000,
-        delay: 400,
-        easing: 'easeOutQuart'
-      });
-    };
-
-    animateElements();
-  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -66,7 +17,7 @@ export default function Dashboard() {
 
       <div className="relative container mx-auto px-4 py-8">
         {/* Header */}
-        <header ref={headerRef} className="text-center mb-16">
+        <header className="text-center mb-16">
           <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-6">
             LinkMagik
           </h1>
@@ -83,7 +34,7 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="stat-card bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
@@ -130,7 +81,7 @@ export default function Dashboard() {
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* URL Shortener Form */}
-          <div ref={formRef} className="lg:col-span-2">
+          <div className="lg:col-span-2">
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
