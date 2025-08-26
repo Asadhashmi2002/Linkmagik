@@ -9,6 +9,8 @@ export function middleware(request: NextRequest) {
     '/api/redirect',
     '/api/auth/login',
     '/api/auth/logout',
+    '/api/auth/register',
+    '/api/auth/profile',
     '/ad',
     '/ad-2',
     '/redirect',
