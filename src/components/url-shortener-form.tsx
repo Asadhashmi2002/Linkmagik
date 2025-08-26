@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { createLink } from '@/lib/db';
 import { useRouter } from 'next/navigation';
 
 export function UrlShortenerForm() {
@@ -29,7 +28,18 @@ export function UrlShortenerForm() {
 
     setLoading(true);
     try {
-      await createLink(longUrl, description);
+      const response = await fetch('/api/links', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ longUrl, description }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create link');
+      }
+
       setLongUrl('');
       setDescription('');
       toast({
