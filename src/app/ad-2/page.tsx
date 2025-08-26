@@ -1,26 +1,6 @@
-import AdFlowPage from '@/components/ad-flow-page';
-import { Suspense } from 'react';
-
-// Using Suspense to handle client-side nature of URL search parameters
-function AdPageContent() {
-    return <AdFlowPage
-        pageNum={2}
-        title="Please wait... (Step 2 of 2)"
-        adText="Your Ad Here (Page 2)"
-        isFinalRedirect={true}
-    />;
-}
+import { redirect } from 'next/navigation';
 
 export default function Page() {
-    return (
-        <>
-            {/* Google AdSense Banner Ad - Add after site verification */}
-            <div className="bg-gray-100 p-4 text-center text-gray-600">
-                <p>Ad Space - Google AdSense will be added after site verification</p>
-            </div>
-            <Suspense fallback={<div>Loading...</div>}>
-                <AdPageContent />
-            </Suspense>
-        </>
-    )
+    // Redirect to dashboard since we're not using second ad page anymore
+    redirect('/dashboard');
 }
