@@ -1,98 +1,103 @@
 'use client';
 
-import { useFormStatus } from 'react-dom';
-import { useActionState } from 'react';
-import { shortenUrl, type ShortenState } from '@/lib/actions';
-import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useEffect, useRef, useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Wand2, Loader2, Copy, Check } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-
-const initialState: ShortenState = {};
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending} className="w-full sm:w-auto shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground">
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Shortening...
-        </>
-      ) : (
-        <>
-          <Wand2 className="mr-2 h-4 w-4" />
-          Shorten
-        </>
-      )}
-    </Button>
-  );
-}
+import { createLink } from '@/lib/db';
+import { useRouter } from 'next/navigation';
 
 export function UrlShortenerForm() {
-  const [state, formAction] = useActionState(shortenUrl, initialState);
-  const [shortUrl, setShortUrl] = useState<string | undefined>(undefined);
-  const [copied, setCopied] = useState(false);
+  const [longUrl, setLongUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
-  useEffect(() => {
-    if (state?.error) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!longUrl.trim()) {
       toast({
-        variant: 'destructive',
-        title: 'Oops!',
-        description: state.error,
+        title: "Error",
+        description: "Please enter a URL",
+        variant: "destructive",
       });
-      setShortUrl(undefined);
+      return;
     }
-    if (state?.message && state.shortUrl) {
-      setShortUrl(state.shortUrl);
-      formRef.current?.reset();
-    }
-  }, [state, toast]);
 
-  const handleCopy = () => {
-    if (!shortUrl) return;
-    navigator.clipboard.writeText(shortUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setLoading(true);
+    try {
+      await createLink(longUrl, description);
+      setLongUrl('');
+      setDescription('');
+      toast({
+        title: "Success!",
+        description: "Short link created successfully",
+      });
+      router.refresh();
+    } catch (error) {
+      console.error('Error creating link:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create short link",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="w-full space-y-4">
-      <Card className="overflow-hidden shadow-lg border-primary/20">
-        <CardContent className="p-4">
-          <form ref={formRef} action={formAction} className="flex flex-col sm:flex-row gap-2">
-            <Input
-              type="url"
-              name="longUrl"
-              placeholder="Enter a long URL to shorten..."
-              required
-              className="flex-grow text-base h-12"
-            />
-            <SubmitButton />
-          </form>
-           {state?.error && !state.message && (
-             <p className="text-sm text-destructive mt-2 px-1">{state.error}</p>
-          )}
-        </CardContent>
-      </Card>
-      
-      {shortUrl && (
-         <Card className="bg-muted/50">
-            <CardContent className="p-4 flex items-center justify-between gap-4">
-                <a href={shortUrl} target="_blank" rel="noopener noreferrer" className="font-mono text-base text-primary hover:underline break-all">
-                    {shortUrl.replace(/^https?:\/\//, '')}
-                </a>
-                <Button size="icon" variant="ghost" onClick={handleCopy}>
-                    {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                    <span className="sr-only">Copy link</span>
-                </Button>
-            </CardContent>
-         </Card>
-      )}
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="longUrl" className="text-white font-medium">
+          Long URL
+        </Label>
+        <Input
+          id="longUrl"
+          type="url"
+          value={longUrl}
+          onChange={(e) => setLongUrl(e.target.value)}
+          placeholder="https://example.com/very-long-url-that-needs-shortening"
+          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description" className="text-white font-medium">
+          Description (Optional)
+        </Label>
+        <Textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Enter a description for this link..."
+          className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400 min-h-[100px]"
+        />
+      </div>
+
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading ? (
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Creating...</span>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            <span>Create Short Link</span>
+          </div>
+        )}
+      </Button>
+    </form>
   );
 }
