@@ -90,18 +90,11 @@ export const getLinks = async (): Promise<Link[]> => {
 };
 
 export const createLink = async (longUrl: string, description: string): Promise<Link> => {
-  console.log('=== CREATE LINK DEBUG ===');
-  console.log('Long URL:', longUrl);
-  console.log('Description:', description);
-  console.log('Pool exists:', !!pool);
-  
   if (!pool) {
-    console.error('Database pool is null - POSTGRES_URL not available');
     throw new Error('Database not connected - POSTGRES_URL not available');
   }
 
   try {
-    console.log('Checking if link already exists...');
     // Check if link already exists
     const existingResult = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
@@ -109,11 +102,8 @@ export const createLink = async (longUrl: string, description: string): Promise<
       WHERE long_url = $1
     `, [longUrl]);
     
-    console.log('Existing result rows:', existingResult.rows.length);
-    
     if (existingResult.rows.length > 0) {
       const existing = existingResult.rows[0];
-      console.log('Found existing link:', existing);
       return {
         id: existing.id,
         longUrl: existing.long_url,
@@ -124,12 +114,9 @@ export const createLink = async (longUrl: string, description: string): Promise<
       };
     }
 
-    console.log('Generating unique short code...');
     // Generate unique random short code
     const shortCode = await generateUniqueShortCode();
-    console.log('Generated short code:', shortCode);
 
-    console.log('Inserting new link into database...');
     // Insert new link
     const result = await pool.query(`
       INSERT INTO links (long_url, short_code, description)
@@ -137,7 +124,6 @@ export const createLink = async (longUrl: string, description: string): Promise<
       RETURNING id, long_url, short_code, description, clicks, created_at
     `, [longUrl, shortCode, description]);
 
-    console.log('Insert result:', result.rows[0]);
     const newLink = result.rows[0];
     return {
       id: newLink.id,
@@ -149,24 +135,16 @@ export const createLink = async (longUrl: string, description: string): Promise<
     };
   } catch (error) {
     console.error('Error creating link:', error);
-    console.error('Error details:', error);
     throw new Error('Failed to create link');
   }
 };
 
 export const getLinkByCode = async (shortCode: string): Promise<Link | undefined> => {
-  console.log('=== GET LINK BY CODE DEBUG ===');
-  console.log('Short code:', shortCode);
-  console.log('Pool exists:', !!pool);
-  
   if (!pool) {
-    console.error('Database pool is null - POSTGRES_URL not available');
     throw new Error('Database not connected - POSTGRES_URL not available');
   }
 
   try {
-    console.log('Executing database query for short code:', shortCode);
-    
     // First, get the link
     const result = await pool.query(`
       SELECT id, long_url, short_code, description, clicks, created_at
@@ -174,16 +152,11 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
       WHERE short_code = $1
     `, [shortCode]);
 
-    console.log('Query result rows:', result.rows.length);
-    console.log('Query result:', result.rows);
-
     if (result.rows.length === 0) {
-      console.log('No link found for short code:', shortCode);
       return undefined;
     }
 
     const link = result.rows[0];
-    console.log('Found link:', link);
 
     // Increment clicks
     await pool.query(`
@@ -191,8 +164,6 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
       SET clicks = clicks + 1 
       WHERE id = $1
     `, [link.id]);
-
-    console.log('Clicks incremented successfully');
 
     return {
       id: link.id,
@@ -204,7 +175,6 @@ export const getLinkByCode = async (shortCode: string): Promise<Link | undefined
     };
   } catch (error) {
     console.error('Error fetching link by code:', error);
-    console.error('Error details:', error);
     return undefined;
   }
 };
