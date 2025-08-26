@@ -1,18 +1,12 @@
 import { UrlShortenerForm } from "@/components/url-shortener-form";
 import { LinksList, LinksListSkeleton } from "@/components/links-list";
 import { Suspense } from "react";
-import { LogoutButton } from "@/components/logout-button";
-import { UserProfile } from "@/components/user-profile";
 
 export default function Dashboard() {
   return (
     <main className="container mx-auto flex min-h-screen w-full flex-col items-center justify-start p-4 selection:bg-primary/20 md:p-8">
       <div className="w-full max-w-4xl space-y-12 mt-12">
-        <header className="text-center relative">
-          <div className="absolute top-0 right-0 flex gap-2">
-            <UserProfile />
-            <LogoutButton />
-          </div>
+        <header className="text-center">
           <h1 className="font-headline text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
             LinkMagik
           </h1>
@@ -54,7 +48,6 @@ export default function Dashboard() {
               <h3 className="text-lg font-semibold mb-4">System Info</h3>
               <div className="space-y-2 text-sm text-gray-600">
                 <p>Database: Connected</p>
-                <p>Authentication: Active</p>
                 <p>Ad System: Ready</p>
                 <p>Version: 2.0.0</p>
               </div>
