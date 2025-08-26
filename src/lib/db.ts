@@ -11,9 +11,7 @@ if (process.env.POSTGRES_URL) {
     
     pool = new Pool({
       connectionString: process.env.POSTGRES_URL,
-      ssl: isLocalConnection ? false : {
-        rejectUnauthorized: false
-      }
+      ssl: false // Disable SSL for now to fix connection issues
     });
   } catch (error) {
     console.error('Error creating database pool:', error);
