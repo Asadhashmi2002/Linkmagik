@@ -23,7 +23,7 @@ export function LinkCard({ link, onDelete }: LinkCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { toast } = useToast();
 
-  const shortUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'}/api/redirect/${link.shortCode}`;
+  const shortUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002'}/${link.shortCode}`;
 
   const handleCopy = async () => {
     try {

@@ -13,7 +13,9 @@ export default function AdPage() {
 
         if (countdown <= 0) {
             try {
-                window.location.href = destinationUrl;
+                // Redirect to second ad page instead of destination
+                const secondAdUrl = `/ad-2?destination=${encodeURIComponent(destinationUrl)}`;
+                window.location.href = secondAdUrl;
             } catch (e) {
                 console.error("Redirection failed", e);
             }
@@ -41,7 +43,7 @@ export default function AdPage() {
             {/* Main Content */}
             <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 py-8">
                 <p className="text-xl text-gray-800 z-10 relative">
-                    You will be redirected in <span className="font-bold text-primary">{countdown}</span> seconds...
+                    Please wait... <span className="font-bold text-primary">{countdown}</span> seconds...
                 </p>
             </div>
         </div>
