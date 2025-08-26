@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -11,6 +13,11 @@ export function middleware(request: NextRequest) {
     '/api/auth/logout',
     '/api/auth/register',
     '/api/auth/profile',
+    '/api/init-db',
+    '/api/test-db',
+    '/api/test-auth',
+    '/api/env-check',
+    '/api/create-admin',
     '/ad',
     '/ad-2',
     '/redirect',
@@ -36,8 +43,13 @@ export function middleware(request: NextRequest) {
   }
 
   // Verify the token
-  const payload = verifyToken(token);
-  if (!payload) {
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    if (!payload) {
+      // Invalid token, redirect to login
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  } catch (error) {
     // Invalid token, redirect to login
     return NextResponse.redirect(new URL('/login', request.url));
   }

@@ -71,13 +71,14 @@ export async function initDatabase() {
       `, [adminEmail, passwordHash, true]);
       
       console.log('Admin user created successfully');
+    } else {
+      console.log('Admin user already exists');
     }
 
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);
     throw error;
-  } finally {
-    await pool.end();
   }
+  // Don't close the pool - it's needed for authentication
 }
