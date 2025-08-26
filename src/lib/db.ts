@@ -27,14 +27,36 @@ export interface Link {
 
 const base62Chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-function encode(id: number): string {
-    if (id === 0) return base62Chars[0];
+function generateRandomShortCode(length: number = 8): string {
     let shortCode = '';
-    while (id > 0) {
-        shortCode = base62Chars[id % 62] + shortCode;
-        id = Math.floor(id / 62);
+    for (let i = 0; i < length; i++) {
+        shortCode += base62Chars[Math.floor(Math.random() * base62Chars.length)];
     }
-    return shortCode.padStart(4, base62Chars[0]);
+    return shortCode;
+}
+
+async function generateUniqueShortCode(): Promise<string> {
+    let shortCode: string;
+    let attempts = 0;
+    const maxAttempts = 10;
+    
+    do {
+        shortCode = generateRandomShortCode(8);
+        attempts++;
+        
+        // Check if this short code already exists
+        if (pool) {
+            const result = await pool.query('SELECT id FROM links WHERE short_code = $1', [shortCode]);
+            if (result.rows.length === 0) {
+                return shortCode; // Found unique code
+            }
+        } else {
+            return shortCode; // If no database, just return random code
+        }
+    } while (attempts < maxAttempts);
+    
+    // If we can't find a unique code after max attempts, add timestamp
+    return shortCode + Date.now().toString(36);
 }
 
 export const getLinks = async (): Promise<Link[]> => {
@@ -89,10 +111,8 @@ export const createLink = async (longUrl: string, description: string): Promise<
       };
     }
 
-    // Get the next ID for encoding
-    const idResult = await pool.query('SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM links');
-    const nextId = idResult.rows[0].next_id;
-    const shortCode = encode(nextId);
+    // Generate unique random short code
+    const shortCode = await generateUniqueShortCode();
 
     // Insert new link
     const result = await pool.query(`
@@ -167,7 +187,7 @@ export const deleteLink = async (shortCode: string): Promise<boolean> => {
       WHERE short_code = $1
     `, [shortCode]);
 
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   } catch (error) {
     console.error('Error deleting link:', error);
     return false;
