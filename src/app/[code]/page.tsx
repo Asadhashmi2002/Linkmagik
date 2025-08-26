@@ -8,23 +8,16 @@ export default async function ShortCodePage({
 }) {
   const { code } = await params;
 
-  console.log(`=== SHORT URL DEBUG ===`);
-  console.log(`Processing code: ${code}`);
-
   try {
-    console.log(`Calling getLinkByCode for: ${code}`);
     const link = await getLinkByCode(code);
-    console.log(`Database result:`, link);
 
     if (link) {
       const destination = encodeURIComponent(link.longUrl);
       const redirectUrl = `/ad?destination=${destination}`;
-      console.log(`Redirecting to: ${redirectUrl}`);
       
       // Redirect to ad page
       redirect(redirectUrl);
     } else {
-      console.log(`Link not found for code: ${code}`);
       // If link not found, show a proper error page
       return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
@@ -43,7 +36,6 @@ export default async function ShortCodePage({
     }
   } catch (error) {
     console.error(`Error processing redirect for code ${code}:`, error);
-    console.error(`Error details:`, error);
     // On error, show error page
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
