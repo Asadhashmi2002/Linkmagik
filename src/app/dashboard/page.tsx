@@ -26,10 +26,13 @@ export default function Dashboard() {
           </p>
         </header>
 
-        {/* Google AdSense Banner Ad - Add after site verification */}
+        {/* High-Paying Ad 1 - Top Responsive Display Ad */}
         <div className="mb-8 flex justify-center">
-          <div className="bg-gray-100 p-4 text-center text-gray-600 rounded-lg">
-            <p>Ad Space - Google AdSense will be added after site verification</p>
+          <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 text-center w-full max-w-4xl">
+            <div className="w-full h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mb-2">
+              <p className="text-gray-600 font-medium">Responsive Display Ad (728x90)</p>
+            </div>
+            <p className="text-sm text-gray-400">High CPM Display Ad</p>
           </div>
         </div>
 
@@ -78,6 +81,16 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* High-Paying Ad 2 - In-Article Ad */}
+        <div className="mb-8 flex justify-center">
+          <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 text-center w-full max-w-2xl">
+            <div className="w-full h-40 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg flex items-center justify-center mb-2">
+              <p className="text-gray-600 font-medium">In-Article Ad (300x250)</p>
+            </div>
+            <p className="text-sm text-gray-400">High CPM In-Article Ad</p>
+          </div>
+        </div>
+
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* URL Shortener Form */}
@@ -113,10 +126,23 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Bottom Google AdSense Banner Ad - Add after site verification */}
+        {/* High-Paying Ad 3 - In-Feed Ad */}
+        <div className="mt-8 mb-8 flex justify-center">
+          <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 text-center w-full max-w-2xl">
+            <div className="w-full h-32 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mb-2">
+              <p className="text-gray-600 font-medium">In-Feed Ad (300x250)</p>
+            </div>
+            <p className="text-sm text-gray-400">High CPM In-Feed Ad</p>
+          </div>
+        </div>
+
+        {/* High-Paying Ad 4 - Bottom Responsive Ad */}
         <div className="mt-8 flex justify-center">
-          <div className="bg-gray-100 p-4 text-center text-gray-600 rounded-lg">
-            <p>Ad Space - Google AdSense will be added after site verification</p>
+          <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 text-center w-full max-w-4xl">
+            <div className="w-full h-20 bg-gradient-to-r from-orange-100 to-red-100 rounded-lg flex items-center justify-center mb-2">
+              <p className="text-gray-600 font-medium">Responsive Ad (468x60)</p>
+            </div>
+            <p className="text-sm text-gray-400">Mobile Optimized Banner Ad</p>
           </div>
         </div>
       </div>

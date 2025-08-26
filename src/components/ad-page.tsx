@@ -66,7 +66,7 @@ export default function AdPage() {
 
     const handleContinue = () => {
         if (destinationUrl) {
-            window.location.href = destinationUrl;
+                window.location.href = destinationUrl;
         }
     };
 
@@ -209,8 +209,8 @@ export default function AdPage() {
                                 Continue to Destination
                             </button>
                         )}
-                    </div>
                 </div>
+            </div>
 
                 {/* Engagement Prompt */}
                 {showEngagementPrompt && !showScrollButton && (
