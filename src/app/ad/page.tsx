@@ -8,14 +8,10 @@ function AdPageContent() {
 export default function Page() {
     return (
         <>
-            {/* Ad Scripts Section - Add your ad codes here */}
-            <div 
-                dangerouslySetInnerHTML={{
-                    __html: `
-                        <script src="https://fpyf8.com/88/tag.min.js" data-zone="165665" async data-cfasync="false"></script>
-                    `
-                }}
-            />
+            {/* Google AdSense Banner Ad - Add after site verification */}
+            <div className="bg-gray-100 p-4 text-center text-gray-600">
+                <p>Ad Space - Google AdSense will be added after site verification</p>
+            </div>
             
             <Suspense fallback={<div>Loading...</div>}>
                 <AdPageContent />

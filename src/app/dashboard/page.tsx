@@ -75,6 +75,13 @@ export default function Dashboard() {
           </p>
         </header>
 
+        {/* Google AdSense Banner Ad - Add after site verification */}
+        <div className="mb-8 flex justify-center">
+          <div className="bg-gray-100 p-4 text-center text-gray-600 rounded-lg">
+            <p>Ad Space - Google AdSense will be added after site verification</p>
+          </div>
+        </div>
+
         {/* Stats Cards */}
         <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="stat-card bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
@@ -152,6 +159,13 @@ export default function Dashboard() {
                 <LinksList />
               </Suspense>
             </div>
+          </div>
+        </div>
+
+        {/* Bottom Google AdSense Banner Ad - Add after site verification */}
+        <div className="mt-8 flex justify-center">
+          <div className="bg-gray-100 p-4 text-center text-gray-600 rounded-lg">
+            <p>Ad Space - Google AdSense will be added after site verification</p>
           </div>
         </div>
       </div>

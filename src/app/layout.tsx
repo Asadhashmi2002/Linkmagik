@@ -13,10 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light">
-      <head>
-        <meta name="monetag" content="6c24b1ef9e78abde21a102379bc17df2" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <html lang="en" className="light">
+        <head>
+          {/* Google AdSense Site Verification */}
+          <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
+
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
