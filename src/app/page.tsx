@@ -1,26 +1,5 @@
-import { UrlShortenerForm } from "@/components/url-shortener-form";
-import { LinksList, LinksListSkeleton } from "@/components/links-list";
-import { Suspense } from "react";
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <main className="container mx-auto flex min-h-screen w-full flex-col items-center justify-start p-4 selection:bg-primary/20 md:p-8">
-      <div className="w-full max-w-2xl space-y-12 mt-12">
-        <header className="text-center">
-          <h1 className="font-headline text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl">
-            LinkMagik
-          </h1>
-          <p className="mt-3 text-lg text-muted-foreground md:text-xl">
-            A simple URL shortener with a two-page ad flow.
-          </p>
-        </header>
-
-        <UrlShortenerForm />
-
-        <Suspense fallback={<LinksListSkeleton />}>
-          <LinksList />
-        </Suspense>
-      </div>
-    </main>
-  );
+  redirect('/dashboard');
 }
