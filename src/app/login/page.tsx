@@ -96,12 +96,6 @@ export default function LoginPage() {
               {loading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
-
-          <div className="mt-4 text-center text-sm text-gray-600">
-            <p>Default credentials:</p>
-            <p>Email: asadalihashmi2002@gmail.com</p>
-            <p>Password: asad123</p>
-          </div>
         </CardContent>
       </Card>
     </div>

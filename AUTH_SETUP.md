@@ -1,9 +1,5 @@
 # JWT Authentication Setup
 
-## Default Credentials
-- **Email**: `asadalihashmi2002@gmail.com`
-- **Password**: `asad123`
-
 ## Environment Variables (Optional)
 Add these to your `.env.local` file to customize:
 
@@ -46,8 +42,6 @@ ADMIN_PASSWORD=asad123
 ## Testing
 
 1. Visit `http://localhost:9002/login`
-2. Login with:
-   - Email: `asadalihashmi2002@gmail.com`
-   - Password: `asad123`
+2. Login with your admin credentials
 3. You'll be redirected to `/dashboard` where you can create short links
 4. Users clicking your short links will see ads without needing to login
