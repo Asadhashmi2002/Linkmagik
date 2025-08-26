@@ -8,16 +8,22 @@ export default async function ShortCodePage({
 }) {
   const { code } = await params;
 
+  console.log(`=== DYNAMIC ROUTE DEBUG ===`);
+  console.log(`Processing code: ${code}`);
+
   try {
     const link = await getLinkByCode(code);
+    console.log(`Database result:`, link);
 
     if (link) {
       const destination = encodeURIComponent(link.longUrl);
       const redirectUrl = `/ad?destination=${destination}`;
+      console.log(`Redirecting to: ${redirectUrl}`);
       
       // Redirect to ad page
       redirect(redirectUrl);
     } else {
+      console.log(`Link not found, redirecting to dashboard`);
       // If link not found, redirect to dashboard
       redirect('/dashboard');
     }
