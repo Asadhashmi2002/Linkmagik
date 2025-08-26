@@ -11,11 +11,12 @@ export async function GET() {
       );
     }
 
+    const isLocalConnection = process.env.POSTGRES_URL.includes('localhost') ||
+                             process.env.POSTGRES_URL.includes('127.0.0.1');
+    
     const pool = new Pool({
       connectionString: process.env.POSTGRES_URL,
-      ssl: {
-        rejectUnauthorized: false
-      }
+      ssl: isLocalConnection ? false : { rejectUnauthorized: false }
     });
 
     // Create users table if it doesn't exist

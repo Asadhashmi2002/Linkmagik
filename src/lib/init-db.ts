@@ -5,11 +5,11 @@ import bcrypt from 'bcryptjs';
 let pool: Pool | null = null;
 
 if (process.env.POSTGRES_URL) {
+  const isLocalConnection = process.env.POSTGRES_URL.includes('localhost') ||
+                           process.env.POSTGRES_URL.includes('127.0.0.1');
   pool = new Pool({
     connectionString: process.env.POSTGRES_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
+    ssl: isLocalConnection ? false : { rejectUnauthorized: false }
   });
 }
 
