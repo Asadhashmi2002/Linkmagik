@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 export default function AdPage() {
     const searchParams = useSearchParams();
     const destinationUrl = searchParams.get('destination');
-    const [countdown, setCountdown] = useState(10);
+    const [countdown, setCountdown] = useState(20);
 
     useEffect(() => {
         if (!destinationUrl) return;

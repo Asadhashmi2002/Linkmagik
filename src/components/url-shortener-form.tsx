@@ -47,6 +47,10 @@ export function UrlShortenerForm() {
         description: "Short link created successfully",
       });
       router.refresh();
+      // Force page refresh to ensure links list updates
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.error('Error creating link:', error);
       toast({

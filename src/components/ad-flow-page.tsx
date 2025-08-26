@@ -14,7 +14,7 @@ type AdFlowPageProps = {
 export default function AdFlowPage({ pageNum, title, adText, redirectUrl, isFinalRedirect = false }: AdFlowPageProps) {
     const searchParams = useSearchParams();
     const destinationUrl = searchParams.get('destination');
-    const [countdown, setCountdown] = useState(10);
+    const [countdown, setCountdown] = useState(15);
 
     useEffect(() => {
         if (!destinationUrl) return;
