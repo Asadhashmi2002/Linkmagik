@@ -18,6 +18,8 @@ export function middleware(request: NextRequest) {
     '/api/test-auth',
     '/api/env-check',
     '/api/create-admin',
+    '/api/test-admin',
+    '/api/test-login',
     '/ad',
     '/ad-2',
     '/redirect',
