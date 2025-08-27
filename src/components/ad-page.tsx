@@ -140,12 +140,12 @@ export default function AdPage() {
                     )}
                 </div>
 
-                {/* HIGH CPM AD 1: Responsive Display Ad (Highest CPM) */}
+                {/* HIGH CPM AD 1: Mobile Responsive Ad (Highest CPM for Mobile) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-90 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Responsive Display Ad (728x90) - HIGHEST CPM</p>
+                    <div className="w-full h-32 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <p className="text-gray-600 font-medium">Mobile Responsive Ad (320x100) - HIGHEST CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Premium Display Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Optimized Display</p>
                 </div>
 
                 {/* Content Section 2: Link Management Guide */}
@@ -173,12 +173,12 @@ export default function AdPage() {
                     </div>
                 </div>
 
-                {/* HIGH CPM AD 2: In-Article Ad (High CPM) */}
+                {/* HIGH CPM AD 2: Mobile Banner Ad (High CPM) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-60 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">In-Article Ad (300x250) - HIGH CPM</p>
+                    <div className="w-full h-20 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <p className="text-gray-600 font-medium">Mobile Banner Ad (320x50) - HIGH CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Contextual Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Banner Advertising</p>
                 </div>
 
                 {/* Content Section 3: Marketing Strategies */}
@@ -217,12 +217,12 @@ export default function AdPage() {
                     </div>
                 </div>
 
-                {/* HIGH CPM AD 3: In-Feed Ad (High CPM) */}
+                {/* HIGH CPM AD 3: Mobile In-Article Ad (High CPM) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
                     <div className="w-full h-60 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">In-Feed Ad (300x250) - HIGH CPM</p>
+                        <p className="text-gray-600 font-medium">Mobile In-Article Ad (300x250) - HIGH CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Native Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Native Advertising</p>
                 </div>
 
                 {/* Content Section 4: Analytics & Performance */}
@@ -259,12 +259,12 @@ export default function AdPage() {
                     </div>
                 </div>
 
-                {/* HIGH CPM AD 4: Display Ad (High CPM) */}
+                {/* HIGH CPM AD 4: Mobile Responsive Ad (High CPM) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-90 bg-gradient-to-r from-orange-100 to-red-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Display Ad (300x600) - HIGH CPM</p>
+                    <div className="w-full h-32 bg-gradient-to-r from-orange-100 to-red-100 rounded-lg flex items-center justify-center mb-4">
+                        <p className="text-gray-600 font-medium">Mobile Responsive Ad (320x100) - HIGH CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Skyscraper Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Optimized Display</p>
                 </div>
 
                 {/* Content Section 5: Best Practices */}
@@ -300,12 +300,12 @@ export default function AdPage() {
                     </div>
                 </div>
 
-                {/* HIGH CPM AD 5: Responsive Ad (High CPM) */}
+                {/* HIGH CPM AD 5: Mobile Banner Ad (High CPM) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-60 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Responsive Ad (320x100) - HIGH CPM</p>
+                    <div className="w-full h-20 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <p className="text-gray-600 font-medium">Mobile Banner Ad (320x50) - HIGH CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Mobile Optimized Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Banner Advertising</p>
                 </div>
 
                 {/* Content Section 6: Advanced Techniques */}
@@ -341,12 +341,12 @@ export default function AdPage() {
                     </div>
                 </div>
 
-                {/* HIGH CPM AD 6: In-Article Ad (High CPM) */}
+                {/* HIGH CPM AD 6: Mobile In-Article Ad (High CPM) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
                     <div className="w-full h-60 bg-gradient-to-r from-teal-100 to-cyan-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">In-Article Ad (300x250) - HIGH CPM</p>
+                        <p className="text-gray-600 font-medium">Mobile In-Article Ad (300x250) - HIGH CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Content-Relevant Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Content-Relevant Advertising</p>
                 </div>
 
                 {/* Content Section 7: ROI Optimization */}
@@ -383,12 +383,12 @@ export default function AdPage() {
                     </div>
                 </div>
 
-                {/* HIGH CPM AD 7: Display Ad (High CPM) */}
+                {/* HIGH CPM AD 7: Mobile Responsive Ad (High CPM) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-90 bg-gradient-to-r from-violet-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Display Ad (300x250) - HIGH CPM</p>
+                    <div className="w-full h-32 bg-gradient-to-r from-violet-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <p className="text-gray-600 font-medium">Mobile Responsive Ad (320x100) - HIGH CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Medium Rectangle Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Optimized Display</p>
                 </div>
 
                 {/* Content Section 8: Future Trends */}
@@ -423,12 +423,12 @@ export default function AdPage() {
                     </div>
                 </div>
 
-                {/* HIGH CPM AD 8: In-Feed Ad (High CPM) */}
+                {/* HIGH CPM AD 8: Mobile Banner Ad (High CPM) */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-60 bg-gradient-to-r from-emerald-100 to-green-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">In-Feed Ad (300x250) - HIGH CPM</p>
+                    <div className="w-full h-20 bg-gradient-to-r from-emerald-100 to-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <p className="text-gray-600 font-medium">Mobile Banner Ad (320x50) - HIGH CPM</p>
                     </div>
-                    <p className="text-sm text-gray-500">Native Feed Advertising</p>
+                    <p className="text-sm text-gray-500">Mobile Banner Advertising</p>
                 </div>
 
                 {/* Content Section 9: Case Studies & Success Stories */}
