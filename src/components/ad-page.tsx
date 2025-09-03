@@ -7,7 +7,7 @@ export default function AdPage() {
   const router = useRouter();
   const [showFirstButton, setShowFirstButton] = useState(false);
   const [showSecondButton, setShowSecondButton] = useState(false);
-  const [showFinalButton, setShowFinalButton] = useState(false);
+  
   const [firstButtonClicked, setFirstButtonClicked] = useState(false);
   const [secondButtonClicked, setSecondButtonClicked] = useState(false);
   const [firstTimer, setFirstTimer] = useState(15);
@@ -41,10 +41,15 @@ export default function AdPage() {
         setShowTimeProgress(true);
       }
       
-      // Show first button after 30% scroll depth (after viewing ads)
-      if (scrollDepth >= 30 && !showFirstButton) {
-        setShowFirstButton(true);
-      }
+             // Show first button immediately (no scroll requirement)
+       if (!showFirstButton) {
+         setShowFirstButton(true);
+       }
+       
+       // Show second button after first timer completes
+       if (firstButtonClicked && !firstTimerActive && !showSecondButton) {
+         setShowSecondButton(true);
+       }
     }, 1000);
 
     // Show scroll button after 5 seconds
@@ -134,21 +139,20 @@ export default function AdPage() {
     }
   }, [firstTimer, firstTimerActive]);
 
-  // Second timer effect (20 seconds)
-  useEffect(() => {
-    if (secondTimerActive && secondTimer > 0) {
-      const timer = setTimeout(() => {
-        setSecondTimer(prev => prev - 1);
-      }, 1000);
+     // Second timer effect (20 seconds)
+   useEffect(() => {
+     if (secondTimerActive && secondTimer > 0) {
+       const timer = setTimeout(() => {
+         setSecondTimer(prev => prev - 1);
+       }, 1000);
 
-      if (secondTimer === 0) {
-        setSecondTimerActive(false);
-        setShowFinalButton(true);
-      }
+       if (secondTimer === 0) {
+         setSecondTimerActive(false);
+       }
 
-      return () => clearTimeout(timer);
-    }
-  }, [secondTimer, secondTimerActive]);
+       return () => clearTimeout(timer);
+     }
+   }, [secondTimer, secondTimerActive]);
 
   const handleFirstButton = () => {
     setFirstButtonClicked(true);
@@ -156,17 +160,19 @@ export default function AdPage() {
     setFirstTimer(15);
   };
 
-  const handleSecondButton = () => {
-    setSecondButtonClicked(true);
-    setSecondTimerActive(true);
-    setSecondTimer(20);
-  };
+     const handleSecondButton = () => {
+     if (!secondButtonClicked) {
+       setSecondButtonClicked(true);
+       setSecondTimerActive(true);
+       setSecondTimer(20);
+     } else if (!secondTimerActive) {
+       // Timer completed, redirect
+       const destinationUrl = localStorage.getItem('destinationUrl') || 'https://google.com';
+       window.location.href = destinationUrl;
+     }
+   };
 
-  const handleFinalButton = () => {
-    // Redirect to destination URL
-    const destinationUrl = localStorage.getItem('destinationUrl') || 'https://google.com';
-    window.location.href = destinationUrl;
-  };
+  
 
 
 
@@ -204,29 +210,27 @@ export default function AdPage() {
                  {scrollDepth > 0 && (
                    <div className="text-blue-400">Scroll: {scrollDepth}%</div>
                  )}
-                                   {showFirstButton && !firstButtonClicked && (
-                    <div className="text-emerald-400 font-bold">🎯 Button Ready!</div>
+                                   {!firstButtonClicked && (
+                    <div className="text-emerald-400 font-bold">🎯 Start Button Ready!</div>
                   )}
                   {showSecondButton && !secondButtonClicked && (
-                    <div className="text-emerald-400 font-bold">🎯 Next Button Ready!</div>
+                    <div className="text-emerald-400 font-bold">🎯 Download Button Ready!</div>
                   )}
                </div>
                              <div className="text-xs text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg text-center">
-                                                     <div>🎮 Let's Play!</div>
-                   <div className="text-yellow-400 font-medium">Getting ready...</div>
+                                                     <div>🎮 Simple Steps!</div>
+                   <div className="text-yellow-400 font-medium">Follow the buttons...</div>
                    <div className="mt-1 text-xs">
-                     {!showFirstButton ? (
-                       <span>📱 Scroll down to see the button</span>
+                     {!firstButtonClicked ? (
+                       <span>🎯 Click Start button at top</span>
                      ) : firstButtonClicked && firstTimerActive ? (
                        <span>⏰ Wait {firstTimer} seconds...</span>
                      ) : showSecondButton && !secondButtonClicked ? (
-                       <span>🎯 Scroll down to see next button</span>
+                       <span>📱 Scroll to bottom for Download button</span>
                      ) : secondButtonClicked && secondTimerActive ? (
                        <span>⏰ Wait {secondTimer} seconds...</span>
-                     ) : showFinalButton ? (
-                       <span className="text-green-400">🎉 You're almost done!</span>
                      ) : (
-                       <span>🎯 Click the button to start!</span>
+                       <span>🎉 Click to redirect!</span>
                      )}
                    </div>
                </div>
@@ -584,53 +588,39 @@ export default function AdPage() {
         </button>
       )}
 
-      {/* Step-by-Step Button System */}
-      
-                           {/* First Button - Appears after 30% scroll */}
-        {showFirstButton && !firstButtonClicked && (
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
-            <button
-              onClick={handleFirstButton}
-              disabled={firstTimerActive}
-              className={`px-8 py-4 rounded-xl font-bold text-xl shadow-lg transition-all duration-300 ${
-                firstTimerActive 
-                  ? 'bg-gray-400 cursor-not-allowed text-white' 
-                  : 'bg-green-500 hover:bg-green-600 text-white hover:scale-105'
-              }`}
-            >
-              {firstTimerActive ? `Wait ${firstTimer} seconds...` : 'Click Here to Start! 🚀'}
-            </button>
-          </div>
-        )}
+             {/* Simple Button System */}
+       
+       {/* Top Button - Always visible, changes behavior */}
+       <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+         <button
+           onClick={handleFirstButton}
+           disabled={firstTimerActive}
+           className={`px-8 py-4 rounded-xl font-bold text-xl shadow-lg transition-all duration-300 ${
+             firstTimerActive 
+               ? 'bg-gray-400 cursor-not-allowed text-white' 
+               : 'bg-green-500 hover:bg-green-600 text-white hover:scale-105'
+           }`}
+         >
+           {firstTimerActive ? `Wait ${firstTimer} seconds...` : 
+            firstButtonClicked && !firstTimerActive ? 'Scroll to bottom' : 'Start'}
+         </button>
+       </div>
 
-                           {/* Second Button - Appears at bottom after first timer */}
-        {showSecondButton && !secondButtonClicked && (
-          <div className="my-8 px-4">
-            <div className="container mx-auto max-w-4xl">
-              <button
-                onClick={handleSecondButton}
-                disabled={secondTimerActive}
-                className={`w-full px-8 py-6 rounded-xl font-bold text-2xl shadow-lg transition-all duration-300 ${
-                  secondTimerActive 
-                    ? 'bg-gray-400 cursor-not-allowed text-white' 
-                    : 'bg-orange-500 hover:bg-orange-600 text-white hover:scale-105'
-                }`}
-              >
-                {secondTimerActive ? `Wait ${secondTimer} seconds...` : 'Almost Done! Click Here! 🎯'}
-              </button>
-            </div>
-          </div>
-        )}
-
-             {/* Final Button - Appears at bottom after second timer */}
-       {showFinalButton && (
+       {/* Bottom Button - Appears after scrolling to bottom */}
+       {showSecondButton && (
          <div className="my-8 px-4">
            <div className="container mx-auto max-w-4xl">
              <button
-               onClick={handleFinalButton}
-               className="w-full px-8 py-6 rounded-xl font-bold text-2xl shadow-lg bg-green-500 hover:bg-green-600 text-white hover:scale-105 transition-all duration-300"
+               onClick={handleSecondButton}
+               disabled={secondTimerActive}
+               className={`w-full px-8 py-6 rounded-xl font-bold text-2xl shadow-lg transition-all duration-300 ${
+                 secondTimerActive 
+                   ? 'bg-gray-400 cursor-not-allowed text-white' 
+                   : 'bg-orange-500 hover:bg-orange-600 text-white hover:scale-105'
+               }`}
              >
-               🎉 You're Done! Click Here! 🎉
+               {secondTimerActive ? `Wait ${secondTimer} seconds...` : 
+                secondButtonClicked && !secondTimerActive ? 'Click to redirect' : 'Download'}
              </button>
            </div>
          </div>
