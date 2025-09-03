@@ -274,6 +274,7 @@ export default function AdPage() {
         )}
       </div>
 
+
              {/* Pure Ad-Maven & ExoClick Ads - No Cards, Simple Placeholders */}
        
        {/* ExoClick Banner Ad 1 */}
@@ -399,21 +400,41 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Ad-Maven Video Ad Placeholder */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-           <div className="bg-gradient-to-r from-gray-700 to-gray-800 h-[250px] rounded-lg flex items-center justify-center">
-             <div className="text-center">
-               <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                 <span className="text-white text-2xl">▶</span>
-               </div>
-               <span className="text-white font-semibold">Ad-Maven Video Ad</span>
-               <p className="text-gray-300 text-sm">(Pre-roll/Mid-roll optimized)</p>
-             </div>
-           </div>
-         </div>
-       </div>
+               {/* ExoClick VAST Video Ad */}
+        <div className="my-8 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-red-600 to-pink-600 h-[300px] rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-white text-3xl">🎬</span>
+                </div>
+                <span className="text-white font-semibold text-xl">ExoClick VAST Video Ad</span>
+                <p className="text-gray-200 text-sm mt-2">Zone ID: 5715760</p>
+                <p className="text-gray-300 text-xs mt-1">(High CPM Video Ad)</p>
+                <div className="mt-3 text-xs text-gray-400">
+                  <p>VAST URL: s.magsrv.com/v1/vast.php</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Ad-Maven Video Ad Placeholder */}
+        <div className="my-8 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-gray-700 to-gray-800 h-[250px] rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-white text-2xl">▶</span>
+                </div>
+                <span className="text-white font-semibold">Ad-Maven Video Ad</span>
+                <p className="text-gray-300 text-sm">(Pre-roll/Mid-roll optimized)</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
        {/* Ad-Maven Banner Ad 5 */}
        <div className="my-8 px-4">
