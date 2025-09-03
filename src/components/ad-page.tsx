@@ -136,7 +136,17 @@ export default function AdPage() {
         }
       }, 1000);
 
-      return () => clearTimeout(mobileAdTimer);
+      // Force push notifications ad reload for mobile
+      const pushAdTimer = setTimeout(() => {
+        if ((window as any).AdProvider) {
+          (window as any).AdProvider.push({"serve": {}});
+        }
+      }, 2000);
+
+      return () => {
+        clearTimeout(mobileAdTimer);
+        clearTimeout(pushAdTimer);
+      };
     }
   }, []);
 
@@ -364,24 +374,26 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Ad-Maven Push Notification Ad */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-           <div className="bg-gradient-to-r from-yellow-500 to-orange-500 p-4 rounded-lg">
-             <div className="flex items-center space-x-3">
-               <div className="w-3 h-3 bg-white rounded-full"></div>
-               <div className="flex-1">
-                 <h4 className="font-semibold">Get Notifications</h4>
-                 <p className="text-sm text-gray-200">Stay updated with latest tips</p>
-               </div>
-               <button className="bg-white text-orange-600 px-3 py-1 rounded text-sm font-medium">
-                 Allow
-               </button>
-             </div>
-           </div>
-         </div>
-       </div>
+               {/* ExoClick Real Push Notifications Ad */}
+        <div className="my-8 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-white/5 rounded-lg p-4 min-h-[200px] flex items-center justify-center">
+              {/* ExoClick Push Notifications Ad */}
+              <div className="w-full">
+                <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
+                <ins className="eas6a97888e42" data-zoneid="5715776" style={{display: 'block', width: '100%', height: '200px'}}></ins> 
+                <script dangerouslySetInnerHTML={{__html: '(AdProvider = window.AdProvider || []).push({"serve": {}});'}}></script>
+              </div>
+              
+              {/* Fallback for mobile if ad doesn't load */}
+              <div className="text-center text-gray-400 text-sm mt-2">
+                <p>Loading push notifications...</p>
+                <p className="text-xs">Zone ID: 5715776</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
        {/* Ad-Maven Banner Ad 3 */}
        <div className="my-8 px-4">
