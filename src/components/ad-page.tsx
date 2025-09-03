@@ -123,36 +123,40 @@ export default function AdPage() {
     };
   }, []);
 
-  // First timer effect (15 seconds)
-  useEffect(() => {
-    if (firstTimerActive && firstTimer > 0) {
-      const timer = setTimeout(() => {
-        setFirstTimer(prev => prev - 1);
-      }, 1000);
-
-      if (firstTimer === 0) {
-        setFirstTimerActive(false);
-        setShowSecondButton(true);
-      }
-
-      return () => clearTimeout(timer);
-    }
-  }, [firstTimer, firstTimerActive]);
-
-     // Second timer effect (20 seconds)
+     // First timer effect (15 seconds)
    useEffect(() => {
-     if (secondTimerActive && secondTimer > 0) {
+     if (firstTimerActive && firstTimer > 0) {
        const timer = setTimeout(() => {
-         setSecondTimer(prev => prev - 1);
+         setFirstTimer(prev => {
+           if (prev <= 1) {
+             setFirstTimerActive(false);
+             setShowSecondButton(true);
+             return 0;
+           }
+           return prev - 1;
+         });
        }, 1000);
-
-       if (secondTimer === 0) {
-         setSecondTimerActive(false);
-       }
 
        return () => clearTimeout(timer);
      }
-   }, [secondTimer, secondTimerActive]);
+   }, [firstTimer, firstTimerActive]);
+
+           // Second timer effect (20 seconds)
+    useEffect(() => {
+      if (secondTimerActive && secondTimer > 0) {
+        const timer = setTimeout(() => {
+          setSecondTimer(prev => {
+            if (prev <= 1) {
+              setSecondTimerActive(false);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        return () => clearTimeout(timer);
+      }
+    }, [secondTimer, secondTimerActive]);
 
   const handleFirstButton = () => {
     setFirstButtonClicked(true);
