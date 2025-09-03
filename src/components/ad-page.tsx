@@ -14,114 +14,46 @@ export default function AdPage() {
   const [secondTimer, setSecondTimer] = useState(20);
   const [firstTimerActive, setFirstTimerActive] = useState(false);
   const [secondTimerActive, setSecondTimerActive] = useState(false);
-  const [showScrollButton, setShowScrollButton] = useState(false);
-  const [progressStarted, setProgressStarted] = useState(false);
-  const [contentLoaded, setContentLoaded] = useState(false);
-  const [showEngagementPrompt, setShowEngagementPrompt] = useState(false);
-  const [engagementStep, setEngagementStep] = useState(0);
   const [timeSpent, setTimeSpent] = useState(0);
-  const [showTimeProgress, setShowTimeProgress] = useState(false);
-  const [readingProgress, setReadingProgress] = useState(0);
   const [scrollDepth, setScrollDepth] = useState(0);
-  const [showMotivationalMessage, setShowMotivationalMessage] = useState(false);
-  const [funFact, setFunFact] = useState('');
-  const [funFactIndex, setFunFactIndex] = useState(0);
 
-    useEffect(() => {
-    // Start time tracking immediately
-    const startTime = Date.now();
-    
-    // Time tracking interval
-    const timeInterval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      setTimeSpent(elapsed);
-      
-      // Show time progress after 10 seconds
-      if (elapsed >= 10) {
-        setShowTimeProgress(true);
-      }
-      
-             // Show first button immediately (no scroll requirement)
-       if (!showFirstButton) {
-         setShowFirstButton(true);
-       }
+         useEffect(() => {
+     // Start time tracking immediately
+     const startTime = Date.now();
+     
+     // Time tracking interval
+     const timeInterval = setInterval(() => {
+       const elapsed = Math.floor((Date.now() - startTime) / 1000);
+       setTimeSpent(elapsed);
        
-       // Show second button after first timer completes
-       if (firstButtonClicked && !firstTimerActive && !showSecondButton) {
-         setShowSecondButton(true);
-       }
-    }, 1000);
+              // Show first button immediately (no scroll requirement)
+        if (!showFirstButton) {
+          setShowFirstButton(true);
+        }
+        
+        // Show second button after first timer completes
+        if (firstButtonClicked && !firstTimerActive && !showSecondButton) {
+          setShowSecondButton(true);
+        }
+     }, 1000);
 
-    // Show scroll button after 5 seconds
-    const scrollTimer = setTimeout(() => {
-      setShowScrollButton(true);
-    }, 5000);
+     // Track scroll depth
+     const handleScroll = () => {
+       const scrollTop = window.pageYOffset;
+       const docHeight = document.body.scrollHeight - window.innerHeight;
+       const scrollPercent = Math.round((scrollTop / docHeight) * 100);
+       setScrollDepth(scrollPercent);
+     };
 
-    // Show engagement prompt after 15 seconds
-    const engagementTimer = setTimeout(() => {
-      setShowEngagementPrompt(true);
-    }, 15000);
+     window.addEventListener('scroll', handleScroll);
 
-    // Show motivational message after 30 seconds
-    const motivationalTimer = setTimeout(() => {
-      setShowMotivationalMessage(true);
-    }, 30000);
+     return () => {
+       clearInterval(timeInterval);
+       window.removeEventListener('scroll', handleScroll);
+     };
+   }, [scrollDepth, showFirstButton]);
 
-           // Show fun facts every 20 seconds
-       const funFactTimer = setInterval(() => {
-         const facts = [
-           "💡 Did you know? Mobile users spend 70% more time on mobile-optimized sites",
-           "🚀 Pro tip: URL shortening can increase click-through rates by up to 34%",
-           "📱 Mobile-first design improves conversion rates by 64%",
-           "🎯 Native ads perform 8x better than traditional banner ads",
-           "⚡ Fast-loading pages have 70% higher conversion rates",
-           "💰 High-engagement users generate 3x more ad revenue",
-           "📊 Scroll depth directly impacts ad viewability rates",
-           "🎯 Interactive ads have 47% higher engagement rates"
-         ];
-         setFunFact(facts[funFactIndex % facts.length]);
-         setFunFactIndex(prev => prev + 1);
-       }, 20000);
 
-    // Track scroll depth
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset;
-      const docHeight = document.body.scrollHeight - window.innerHeight;
-      const scrollPercent = Math.round((scrollTop / docHeight) * 100);
-      setScrollDepth(scrollPercent);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      clearInterval(timeInterval);
-      clearInterval(funFactTimer);
-      clearTimeout(scrollTimer);
-      clearTimeout(engagementTimer);
-      clearTimeout(motivationalTimer);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [scrollDepth, showFirstButton, funFactIndex]);
-
-  useEffect(() => {
-    // Simulate content loading
-    const timer = setTimeout(() => {
-      setContentLoaded(true);
-    }, 3000);
-
-    // Track reading progress
-    const readingInterval = setInterval(() => {
-      setReadingProgress(prev => {
-        if (prev >= 100) return 100;
-        return prev + 1;
-      });
-    }, 2000); // Increase reading progress every 2 seconds
-
-    return () => {
-      clearTimeout(timer);
-      clearInterval(readingInterval);
-    };
-  }, []);
 
   // Mobile-specific ad loading effect
   useEffect(() => {
@@ -143,9 +75,17 @@ export default function AdPage() {
         }
       }, 2000);
 
+      // Force fullpage interstitial ad reload for mobile
+      const interstitialTimer = setTimeout(() => {
+        if ((window as any).AdProvider) {
+          (window as any).AdProvider.push({"serve": {}});
+        }
+      }, 3000);
+
       return () => {
         clearTimeout(mobileAdTimer);
         clearTimeout(pushAdTimer);
+        clearTimeout(interstitialTimer);
       };
     }
   }, []);
@@ -214,12 +154,7 @@ export default function AdPage() {
     });
   };
 
-  const handleEngagement = () => {
-    setEngagementStep(prev => prev + 1);
-    if (engagementStep >= 2) {
-      setShowEngagementPrompt(false);
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
@@ -230,14 +165,9 @@ export default function AdPage() {
             <h1 className="text-xl font-bold">LinkMagik</h1>
             <div className="flex items-center space-x-4">
                              <div className="text-sm text-gray-300 space-y-1">
-                 {showTimeProgress && (
-                   <div className="text-yellow-400">
-                     Time: {Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}
-                   </div>
-                 )}
-                 {readingProgress > 0 && (
-                   <div className="text-green-400">Reading: {readingProgress}%</div>
-                 )}
+                                   <div className="text-yellow-400">
+                    Time: {Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}
+                  </div>
                  {scrollDepth > 0 && (
                    <div className="text-blue-400">Scroll: {scrollDepth}%</div>
                  )}
@@ -280,25 +210,7 @@ export default function AdPage() {
           ></div>
         </div>
         
-        {/* Time Progress Bar */}
-        {showTimeProgress && (
-          <div className="w-full bg-gray-700 h-2">
-            <div 
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 transition-all duration-300"
-              style={{ width: `${Math.min((timeSpent / 60) * 100, 100)}%` }}
-            ></div>
-          </div>
-        )}
         
-        {/* Reading Progress Bar */}
-        {readingProgress > 0 && (
-          <div className="w-full bg-gray-700 h-2">
-            <div 
-              className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 transition-all duration-300"
-              style={{ width: `${readingProgress}%` }}
-            ></div>
-          </div>
-        )}
       </div>
 
 
@@ -324,18 +236,26 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* ExoClick Interstitial Ad */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-           <div className="bg-gradient-to-r from-orange-500 to-red-500 h-[400px] rounded-lg flex items-center justify-center">
-             <span className="text-white font-semibold text-center">
-               ExoClick Interstitial Ad<br/>
-               (Full-screen mobile optimized)
-             </span>
-           </div>
-         </div>
-       </div>
+               {/* ExoClick Mobile Fullpage Interstitial Ad */}
+        <div className="my-8 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-white/5 rounded-lg p-4 min-h-[400px] flex items-center justify-center">
+              {/* ExoClick Fullpage Interstitial Ad */}
+              <div className="w-full">
+                <script async type="application/javascript" src="https://a.pemsrv.com/ad-provider.js"></script> 
+                <ins className="eas6a97888e33" data-zoneid="5715824" style={{display: 'block', width: '100%', height: '400px'}}></ins> 
+                <script dangerouslySetInnerHTML={{__html: '(AdProvider = window.AdProvider || []).push({"serve": {}});'}}></script>
+              </div>
+              
+              {/* Fallback for mobile if ad doesn't load */}
+              <div className="text-center text-gray-400 text-sm mt-2">
+                <p>Loading fullpage interstitial...</p>
+                <p className="text-xs">Zone ID: 5715824</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
        {/* Ad-Maven Interstitial Ad */}
        <div className="my-8 px-4">
@@ -350,19 +270,7 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Ad-Maven Native Ad 1 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
-           <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 rounded-lg">
-             <h3 className="text-xl font-semibold mb-2">Boost Your Business</h3>
-             <p className="text-gray-200 mb-3">Discover proven strategies to grow your online presence</p>
-             <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium">
-               Learn More
-             </button>
-           </div>
-         </div>
-       </div>
+       
 
        {/* Ad-Maven Banner Ad 2 */}
        <div className="my-8 px-4">
@@ -405,19 +313,7 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Ad-Maven Native Ad 2 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
-           <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-6 rounded-lg">
-             <h3 className="text-xl font-semibold mb-2">Mobile Success Guide</h3>
-             <p className="text-gray-200 mb-3">Learn how to optimize your business for mobile users</p>
-             <button className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-medium">
-               Get Started
-             </button>
-           </div>
-         </div>
-       </div>
+       
 
        {/* Ad-Maven Banner Ad 4 */}
        <div className="my-8 px-4">
@@ -477,26 +373,7 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Ad-Maven Rich Media Ad */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-           <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-6 rounded-lg">
-             <div className="text-center">
-               <h3 className="text-xl font-semibold mb-2">Interactive Experience</h3>
-               <p className="text-gray-200 mb-4">Engage with our interactive mobile ad</p>
-               <div className="flex space-x-3 justify-center">
-                 <button className="bg-white text-cyan-600 px-4 py-2 rounded-lg font-medium">
-                   Tap Here
-                 </button>
-                 <button className="bg-white/20 text-white px-4 py-2 rounded-lg font-medium">
-                   Swipe
-                 </button>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
+       
 
        {/* Ad-Maven Banner Ad 6 */}
        <div className="my-8 px-4">
@@ -508,19 +385,7 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Ad-Maven Native Ad 3 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
-           <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-6 rounded-lg">
-             <h3 className="text-xl font-semibold mb-2">Email Success Blueprint</h3>
-             <p className="text-gray-200 mb-3">Master the art of email marketing with proven strategies</p>
-             <button className="bg-white text-rose-600 px-4 py-2 rounded-lg font-medium">
-               Download Guide
-             </button>
-           </div>
-         </div>
-       </div>
+       
 
        {/* Ad-Maven Banner Ad 7 */}
        <div className="my-8 px-4">
@@ -532,24 +397,7 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Ad-Maven Push Notification Ad 2 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-           <div className="bg-gradient-to-r from-lime-500 to-green-500 p-4 rounded-lg">
-             <div className="flex items-center space-x-3">
-               <div className="w-3 h-3 bg-white rounded-full"></div>
-               <div className="flex-1">
-                 <h4 className="font-semibold">Conversion Tips</h4>
-                 <p className="text-sm text-gray-200">Get daily optimization tips</p>
-               </div>
-               <button className="bg-white text-lime-600 px-3 py-1 rounded text-sm font-medium">
-                 Subscribe
-               </button>
-             </div>
-           </div>
-         </div>
-       </div>
+       
 
        {/* Ad-Maven Banner Ad 8 */}
        <div className="my-8 px-4">
@@ -561,79 +409,9 @@ export default function AdPage() {
          </div>
        </div>
 
-             {/* Engagement Prompt */}
-       {showEngagementPrompt && (
-         <div className="fixed bottom-4 right-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 max-w-sm">
-           <h3 className="font-semibold mb-2">Stay Engaged!</h3>
-           <p className="text-sm text-gray-300 mb-3">
-             {engagementStep === 0 && "Scroll down to view more advertisements"}
-             {engagementStep === 1 && "Keep scrolling to unlock the next step"}
-             {engagementStep === 2 && "Almost there! Complete the engagement"}
-           </p>
-           <button
-             onClick={handleEngagement}
-             className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
-           >
-             Got it
-           </button>
-         </div>
-       )}
 
-             {/* Motivational Message */}
-       {showMotivationalMessage && (
-         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center">
-           <div className="flex items-center space-x-2 justify-center">
-             <span className="text-xl">🚀</span>
-             <div>
-               <h3 className="font-semibold">Almost There!</h3>
-               <p className="text-sm">Keep scrolling to unlock the next step</p>
-             </div>
-           </div>
-         </div>
-       )}
 
-      {/* Fun Fact Display */}
-      {funFact && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-lg text-center animate-pulse">
-          <div className="flex items-center space-x-2 justify-center">
-            <span className="text-lg">💡</span>
-            <p className="text-sm font-medium">{funFact}</p>
-          </div>
-        </div>
-      )}
 
-      
-
-             {/* Encouragement Message for Low Engagement */}
-       {timeSpent >= 20 && scrollDepth < 20 && (
-         <div className="fixed top-40 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center animate-pulse">
-           <div className="flex items-center space-x-2 justify-center">
-             <span className="text-xl">📱</span>
-             <div>
-               <h3 className="font-semibold">Keep Scrolling!</h3>
-               <p className="text-sm">Scroll down to view more advertisements</p>
-             </div>
-           </div>
-         </div>
-       )}
-
-      {/* Scroll Button */}
-      {showScrollButton && (
-        <button
-          onClick={handleScroll}
-          className="fixed bottom-4 left-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full p-3 hover:bg-white/20 transition-all duration-300 group"
-        >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-          
-                     {/* Tooltip */}
-           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black/80 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-             Scroll to view more ads
-             <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/80"></div>
-           </div>
-        </button>
-      )}
 
              {/* Simple Button System */}
        
