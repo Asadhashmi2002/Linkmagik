@@ -205,30 +205,30 @@ export default function AdPage() {
                    <div className="text-blue-400">Scroll: {scrollDepth}%</div>
                  )}
                                    {showFirstButton && !firstButtonClicked && (
-                    <div className="text-emerald-400 font-bold">📥 Download Button Ready!</div>
+                    <div className="text-emerald-400 font-bold">🎯 Button Ready!</div>
                   )}
                   {showSecondButton && !secondButtonClicked && (
-                    <div className="text-emerald-400 font-bold">🚀 Continue Button Ready!</div>
+                    <div className="text-emerald-400 font-bold">🎯 Next Button Ready!</div>
                   )}
                </div>
                              <div className="text-xs text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg text-center">
-                                   <div>⏱️ Stay engaged for better experience</div>
-                  <div className="text-yellow-400 font-medium">Preparing download...</div>
-                  <div className="mt-1 text-xs">
-                    {!showFirstButton ? (
-                      <span>⏳ Scroll to 30% to unlock download button</span>
-                    ) : firstButtonClicked && firstTimerActive ? (
-                      <span>⏳ Download timer: {firstTimer}s</span>
-                    ) : showSecondButton && !secondButtonClicked ? (
-                      <span>🎯 Scroll to bottom to continue download</span>
-                    ) : secondButtonClicked && secondTimerActive ? (
-                      <span>⏳ Final timer: {secondTimer}s</span>
-                    ) : showFinalButton ? (
-                      <span className="text-green-400">✅ Download ready!</span>
-                    ) : (
-                      <span>🎯 Click download button to start</span>
-                    )}
-                  </div>
+                                                     <div>🎮 Let's Play!</div>
+                   <div className="text-yellow-400 font-medium">Getting ready...</div>
+                   <div className="mt-1 text-xs">
+                     {!showFirstButton ? (
+                       <span>📱 Scroll down to see the button</span>
+                     ) : firstButtonClicked && firstTimerActive ? (
+                       <span>⏰ Wait {firstTimer} seconds...</span>
+                     ) : showSecondButton && !secondButtonClicked ? (
+                       <span>🎯 Scroll down to see next button</span>
+                     ) : secondButtonClicked && secondTimerActive ? (
+                       <span>⏰ Wait {secondTimer} seconds...</span>
+                     ) : showFinalButton ? (
+                       <span className="text-green-400">🎉 You're almost done!</span>
+                     ) : (
+                       <span>🎯 Click the button to start!</span>
+                     )}
+                   </div>
                </div>
             </div>
           </div>
@@ -586,91 +586,55 @@ export default function AdPage() {
 
       {/* Step-by-Step Button System */}
       
-             {/* First Button - Appears after 30% scroll */}
-       {showFirstButton && !firstButtonClicked && (
-         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
-           <div className="mb-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg shadow-lg text-center animate-pulse">
-             <div className="flex items-center space-x-2 justify-center">
-               <span className="text-2xl">📥</span>
-               <div>
-                 <h3 className="font-bold text-lg">Download Start</h3>
-                 <p className="text-sm">Click to start 15-second timer</p>
-               </div>
-               <span className="text-2xl">📥</span>
-             </div>
-           </div>
-           
-           <button
-             onClick={handleFirstButton}
-             disabled={firstTimerActive}
-             className={`px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 transform ${
-               firstTimerActive 
-                 ? 'bg-gray-500 cursor-not-allowed text-gray-300' 
-                 : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white hover:shadow-xl hover:scale-105'
-             }`}
-           >
-             {firstTimerActive ? `⏱️ ${firstTimer}s` : 'Download Start (15s) →'}
-           </button>
-         </div>
-       )}
+                           {/* First Button - Appears after 30% scroll */}
+        {showFirstButton && !firstButtonClicked && (
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+            <button
+              onClick={handleFirstButton}
+              disabled={firstTimerActive}
+              className={`px-8 py-4 rounded-xl font-bold text-xl shadow-lg transition-all duration-300 ${
+                firstTimerActive 
+                  ? 'bg-gray-400 cursor-not-allowed text-white' 
+                  : 'bg-green-500 hover:bg-green-600 text-white hover:scale-105'
+              }`}
+            >
+              {firstTimerActive ? `Wait ${firstTimer} seconds...` : 'Click Here to Start! 🚀'}
+            </button>
+          </div>
+        )}
 
-             {/* Second Button - Appears at bottom after first timer */}
-       {showSecondButton && !secondButtonClicked && (
-         <div className="my-8 px-4">
-           <div className="container mx-auto max-w-4xl">
-             <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-4 rounded-lg shadow-lg text-center animate-pulse">
-               <div className="flex items-center space-x-2 justify-center mb-3">
-                 <span className="text-2xl">🚀</span>
-                 <div>
-                   <h3 className="font-bold text-lg">Continue Download</h3>
-                   <p className="text-sm">Click to start 20-second timer</p>
-                 </div>
-                 <span className="text-2xl">🚀</span>
-               </div>
-               
-               <button
-                 onClick={handleSecondButton}
-                 disabled={secondTimerActive}
-                 className={`px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 transform ${
-                   secondTimerActive 
-                     ? 'bg-gray-500 cursor-not-allowed text-gray-300' 
-                     : 'bg-white text-orange-600 hover:bg-gray-100 hover:shadow-xl hover:scale-105'
-                 }`}
-               >
-                 {secondTimerActive ? `⏱️ ${secondTimer}s` : 'Continue Download (20s) →'}
-               </button>
-             </div>
-           </div>
-         </div>
-       )}
-
-      {/* Final Button - Appears at bottom after second timer */}
-      {showFinalButton && (
-        <div className="my-8 px-4">
-          <div className="container mx-auto max-w-4xl">
-            <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-4 rounded-lg shadow-lg text-center animate-bounce">
-              {/* Celebration Message */}
-              <div className="mb-4">
-                <div className="flex items-center space-x-2 justify-center">
-                  <span className="text-2xl">🎉</span>
-                  <div>
-                    <h3 className="font-bold text-lg">Download Complete!</h3>
-                    <p className="text-sm">You've completed all steps!</p>
-                  </div>
-                  <span className="text-2xl">🎉</span>
-                </div>
-              </div>
-              
+                           {/* Second Button - Appears at bottom after first timer */}
+        {showSecondButton && !secondButtonClicked && (
+          <div className="my-8 px-4">
+            <div className="container mx-auto max-w-4xl">
               <button
-                onClick={handleFinalButton}
-                className="bg-white text-green-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                onClick={handleSecondButton}
+                disabled={secondTimerActive}
+                className={`w-full px-8 py-6 rounded-xl font-bold text-2xl shadow-lg transition-all duration-300 ${
+                  secondTimerActive 
+                    ? 'bg-gray-400 cursor-not-allowed text-white' 
+                    : 'bg-orange-500 hover:bg-orange-600 text-white hover:scale-105'
+                }`}
               >
-                Continue to Destination →
+                {secondTimerActive ? `Wait ${secondTimer} seconds...` : 'Almost Done! Click Here! 🎯'}
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+             {/* Final Button - Appears at bottom after second timer */}
+       {showFinalButton && (
+         <div className="my-8 px-4">
+           <div className="container mx-auto max-w-4xl">
+             <button
+               onClick={handleFinalButton}
+               className="w-full px-8 py-6 rounded-xl font-bold text-2xl shadow-lg bg-green-500 hover:bg-green-600 text-white hover:scale-105 transition-all duration-300"
+             >
+               🎉 You're Done! Click Here! 🎉
+             </button>
+           </div>
+         </div>
+       )}
     </div>
   );
 }
