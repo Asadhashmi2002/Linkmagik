@@ -1,715 +1,868 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AdPage() {
-    const searchParams = useSearchParams();
-    const destinationUrl = searchParams.get('destination');
-    const [showContinue, setShowContinue] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [skipEnabled, setSkipEnabled] = useState(false);
-    const [skipText, setSkipText] = useState('Preparing...');
-    const [showScrollButton, setShowScrollButton] = useState(false);
-    const [progressStarted, setProgressStarted] = useState(false);
-    const [contentLoaded, setContentLoaded] = useState(false);
-    const [showEngagementPrompt, setShowEngagementPrompt] = useState(false);
-    const [engagementStep, setEngagementStep] = useState(0);
+  const router = useRouter();
+  const [showContinue, setShowContinue] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [progressStarted, setProgressStarted] = useState(false);
+  const [contentLoaded, setContentLoaded] = useState(false);
+  const [showEngagementPrompt, setShowEngagementPrompt] = useState(false);
+  const [engagementStep, setEngagementStep] = useState(0);
+  const [timeSpent, setTimeSpent] = useState(0);
+  const [minTimeRequired, setMinTimeRequired] = useState(60); // 60 seconds minimum
+  const [showTimeProgress, setShowTimeProgress] = useState(false);
+  const [engagementRequired, setEngagementRequired] = useState(true);
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [scrollDepth, setScrollDepth] = useState(0);
+  const [showMotivationalMessage, setShowMotivationalMessage] = useState(false);
+  const [funFact, setFunFact] = useState('');
+  const [funFactIndex, setFunFactIndex] = useState(0);
 
-    useEffect(() => {
-        if (!destinationUrl) return;
+  useEffect(() => {
+    // Start time tracking immediately
+    const startTime = Date.now();
+    
+    // Time tracking interval
+    const timeInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      setTimeSpent(elapsed);
+      
+      // Show time progress after 10 seconds
+      if (elapsed >= 10) {
+        setShowTimeProgress(true);
+      }
+      
+             // Enable continue button only after minimum time + engagement
+       if (elapsed >= minTimeRequired && readingProgress >= 30 && scrollDepth >= 50) {
+         setShowContinue(true);
+       }
+    }, 1000);
 
-        const timers = [
-            setTimeout(() => {
-                setSkipEnabled(true);
-                setSkipText('Skip & Continue');
-            }, 3000),
-            
-            setTimeout(() => {
-                setContentLoaded(true);
-            }, 5000),
-            
-            setTimeout(() => {
-                setShowEngagementPrompt(true);
-            }, 8000),
-            
-            setTimeout(() => {
-                setShowScrollButton(true);
-            }, 12000),
-        ];
+    // Start progress after 2 seconds
+    const progressTimer = setTimeout(() => {
+      setProgressStarted(true);
+      setProgress(0);
+      
+      const interval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            // Don't show continue yet - wait for time + engagement
+            return 100;
+          }
+          return prev + 1; // Slower progress
+        });
+      }, 200); // Slower progress
 
-        return () => timers.forEach(timer => clearTimeout(timer));
-    }, [destinationUrl]);
+      return () => clearInterval(interval);
+    }, 2000);
 
-    useEffect(() => {
-        if (!progressStarted) return;
+         // No skip button - users must complete full engagement
 
-        const progressInterval = setInterval(() => {
-            setProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(progressInterval);
-                    setShowContinue(true);
-                    return 100;
-                }
-                return prev + 2;
-            });
-        }, 200);
+    // Show scroll button after 5 seconds
+    const scrollTimer = setTimeout(() => {
+      setShowScrollButton(true);
+    }, 5000);
 
-        return () => clearInterval(progressInterval);
-    }, [progressStarted]);
+           // Show engagement prompt after 15 seconds
+       const engagementTimer = setTimeout(() => {
+         setShowEngagementPrompt(true);
+       }, 15000);
 
-    const handleContinue = () => {
-        if (destinationUrl) {
-            window.location.href = destinationUrl;
-        }
+       // Show motivational message after 30 seconds
+       const motivationalTimer = setTimeout(() => {
+         setShowMotivationalMessage(true);
+       }, 30000);
+
+       // Show fun facts every 20 seconds
+       const funFactTimer = setInterval(() => {
+         const facts = [
+           "💡 Did you know? Mobile users spend 70% more time on mobile-optimized sites",
+           "🚀 Pro tip: URL shortening can increase click-through rates by up to 34%",
+           "📱 Mobile-first design improves conversion rates by 64%",
+           "🎯 Native ads perform 8x better than traditional banner ads",
+           "⚡ Fast-loading pages have 70% higher conversion rates"
+         ];
+         setFunFact(facts[funFactIndex % facts.length]);
+         setFunFactIndex(prev => prev + 1);
+       }, 20000);
+
+    // Track scroll depth
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset;
+      const docHeight = document.body.scrollHeight - window.innerHeight;
+      const scrollPercent = Math.round((scrollTop / docHeight) * 100);
+      setScrollDepth(scrollPercent);
     };
 
-    const handleSkip = () => {
-        if (destinationUrl && skipEnabled) {
-            window.location.href = destinationUrl;
-        }
-    };
+    window.addEventListener('scroll', handleScroll);
 
-    const handleScrollToBottom = () => {
-        setShowScrollButton(false);
-        setProgressStarted(true);
-        setProgress(0);
-    };
+         return () => {
+       clearInterval(timeInterval);
+       clearInterval(funFactTimer);
+       clearTimeout(progressTimer);
+       clearTimeout(scrollTimer);
+       clearTimeout(engagementTimer);
+       clearTimeout(motivationalTimer);
+       window.removeEventListener('scroll', handleScroll);
+     };
+  }, [minTimeRequired, readingProgress]);
 
-    const handleEngagementClick = () => {
-        setEngagementStep(prev => prev + 1);
-        if (engagementStep >= 2) {
-            setShowScrollButton(true);
-        }
-    };
+  useEffect(() => {
+    // Simulate content loading
+    const timer = setTimeout(() => {
+      setContentLoaded(true);
+    }, 3000);
 
-    if (!destinationUrl) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center px-4">
-                <h1 className="text-2xl font-bold text-red-600">Redirection Error</h1>
-                <p className="mt-2 text-lg text-gray-700">The destination URL is missing.</p>
-            </div>
-        )
+    // Track reading progress
+    const readingInterval = setInterval(() => {
+      setReadingProgress(prev => {
+        if (prev >= 100) return 100;
+        return prev + 1;
+      });
+    }, 2000); // Increase reading progress every 2 seconds
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(readingInterval);
+    };
+  }, []);
+
+  const handleContinue = () => {
+    // Redirect to destination URL
+    const destinationUrl = localStorage.getItem('destinationUrl') || 'https://google.com';
+    window.location.href = destinationUrl;
+  };
+
+
+
+  const handleScroll = () => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  };
+
+  const handleEngagement = () => {
+    setEngagementStep(prev => prev + 1);
+    if (engagementStep >= 2) {
+      setShowEngagementPrompt(false);
     }
+  };
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-            {/* Header */}
-            <div className="bg-white shadow-sm border-b">
-                <div className="container mx-auto px-4 py-4">
-                    <h1 className="text-2xl font-bold text-gray-800">Redirecting...</h1>
-                    {progressStarted && (
-                        <>
-                            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                                <div 
-                                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
-                                    style={{ width: `${progress}%` }}
-                                ></div>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{progress}% Complete</p>
-                        </>
-                    )}
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="container mx-auto px-4 py-8">
-                {/* Content Section 1: Introduction */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-6">Welcome to LinkMagik</h2>
-                    <p className="text-lg text-gray-700 mb-6">
-                        We're preparing your destination. While you wait, discover how LinkMagik can revolutionize your link management and boost your online presence.
-                    </p>
-                    
-                    <div className="grid md:grid-cols-2 gap-6 mb-6">
-                        <div className="bg-blue-50 p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold text-blue-800 mb-3">🚀 Lightning Fast</h3>
-                            <p className="text-gray-700">Create, customize, and track your links in seconds with our advanced platform.</p>
-                        </div>
-                        <div className="bg-green-50 p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold text-green-800 mb-3">📊 Advanced Analytics</h3>
-                            <p className="text-gray-700">Get detailed insights into your link performance and audience behavior.</p>
-                        </div>
-                    </div>
-
-                    {/* Content Loading Animation */}
-                    {!contentLoaded && (
-                        <div className="flex justify-center mb-8">
-                            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                    )}
-                </div>
-
-                {/* HIGH CPM AD 1: Mobile Responsive Ad (Highest CPM for Mobile) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-32 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile Responsive Ad (320x100) - HIGHEST CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Optimized Display</p>
-                </div>
-
-                {/* Content Section 2: Link Management Guide */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Mastering Link Management</h3>
-                    
-                    <div className="prose max-w-none">
-                        <h4 className="text-xl font-semibold text-gray-800 mb-4">Creating Effective Short Links</h4>
-                        <p className="text-gray-700 mb-4">
-                            The key to successful link management lies in understanding your audience and optimizing for engagement. Here's how to create links that convert:
-                        </p>
-                        
-                        <ol className="list-decimal list-inside space-y-3 text-gray-700 mb-6">
-                            <li><strong>Choose descriptive URLs</strong> - Make your links memorable and professional</li>
-                            <li><strong>Add relevant descriptions</strong> - Help organize and track your campaigns</li>
-                            <li><strong>Monitor performance</strong> - Track clicks, conversions, and engagement</li>
-                            <li><strong>Optimize based on data</strong> - Use analytics to improve your strategy</li>
-                        </ol>
-
-                        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                            <p className="text-yellow-800">
-                                <strong>Pro Tip:</strong> Use branded short URLs to build trust and recognition with your audience.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* HIGH CPM AD 2: Mobile Banner Ad (High CPM) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-20 bg-gradient-to-r from-green-100 to-blue-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile Banner Ad (320x50) - HIGH CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Banner Advertising</p>
-                </div>
-
-                {/* Content Section 3: Marketing Strategies */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Advanced Marketing Strategies</h3>
-                    
-                    <div className="grid md:grid-cols-2 gap-8 mb-6">
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">📈 Social Media Optimization</h4>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Share links across multiple platforms</li>
-                                <li>• Use platform-specific descriptions</li>
-                                <li>• Track engagement by platform</li>
-                                <li>• Optimize posting times</li>
-                                <li>• A/B test different approaches</li>
-                            </ul>
-                        </div>
-                        
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">🎯 Email Campaign Integration</h4>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Include short links in newsletters</li>
-                                <li>• Track email click-through rates</li>
-                                <li>• Segment audiences by behavior</li>
-                                <li>• Personalize link descriptions</li>
-                                <li>• Monitor conversion rates</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="bg-blue-50 p-6 rounded-lg">
-                        <h4 className="text-xl font-semibold text-blue-800 mb-3">💡 Advanced Tips</h4>
-                        <p className="text-gray-700">
-                            Combine multiple strategies for maximum impact. Use analytics to identify your best-performing content and double down on what works.
-                        </p>
-                    </div>
-                </div>
-
-                {/* HIGH CPM AD 3: Mobile In-Article Ad (High CPM) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-60 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile In-Article Ad (300x250) - HIGH CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Native Advertising</p>
-                </div>
-
-                {/* Content Section 4: Analytics & Performance */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Analytics & Performance Tracking</h3>
-                    
-                    <p className="text-lg text-gray-700 mb-6">
-                        Understanding your link performance is crucial for optimizing your marketing efforts. Here's how to leverage analytics effectively:
-                    </p>
-
-                    <div className="grid md:grid-cols-3 gap-6 mb-6">
-                        <div className="bg-green-50 p-6 rounded-lg text-center">
-                            <h4 className="text-xl font-semibold text-green-800 mb-3">📊 Click Tracking</h4>
-                            <p className="text-gray-700">Monitor real-time click data and identify peak engagement times.</p>
-                        </div>
-                        <div className="bg-blue-50 p-6 rounded-lg text-center">
-                            <h4 className="text-xl font-semibold text-blue-800 mb-3">🌍 Geographic Data</h4>
-                            <p className="text-gray-700">Understand where your audience is located and optimize accordingly.</p>
-                        </div>
-                        <div className="bg-purple-50 p-6 rounded-lg text-center">
-                            <h4 className="text-xl font-semibold text-purple-800 mb-3">📱 Device Analytics</h4>
-                            <p className="text-gray-700">Track performance across different devices and optimize for mobile.</p>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                        <h4 className="text-xl font-semibold text-gray-800 mb-3">🔍 Key Metrics to Monitor</h4>
-                        <ul className="space-y-2 text-gray-700">
-                            <li>• <strong>Click-through rate (CTR):</strong> Percentage of people who click your links</li>
-                            <li>• <strong>Conversion rate:</strong> How many clicks lead to desired actions</li>
-                            <li>• <strong>Engagement time:</strong> How long users stay on destination pages</li>
-                            <li>• <strong>Bounce rate:</strong> Percentage of users who leave immediately</li>
-                        </ul>
-                    </div>
-                </div>
-
-                {/* HIGH CPM AD 4: Mobile Responsive Ad (High CPM) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-32 bg-gradient-to-r from-orange-100 to-red-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile Responsive Ad (320x100) - HIGH CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Optimized Display</p>
-                </div>
-
-                {/* Content Section 5: Best Practices */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Industry Best Practices</h3>
-                    
-                    <div className="space-y-6">
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">🔒 Security & Privacy</h4>
-                            <p className="text-gray-700 mb-4">
-                                Protect your links and maintain user trust with these security best practices:
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Use HTTPS for all your links</li>
-                                <li>• Regularly monitor for suspicious activity</li>
-                                <li>• Implement rate limiting to prevent abuse</li>
-                                <li>• Keep your platform updated</li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">⚡ Performance Optimization</h4>
-                            <p className="text-gray-700 mb-4">
-                                Ensure your links load quickly and provide the best user experience:
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Optimize redirect speeds</li>
-                                <li>• Use CDN for global performance</li>
-                                <li>• Monitor uptime and reliability</li>
-                                <li>• Test across different devices</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* HIGH CPM AD 5: Mobile Banner Ad (High CPM) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-20 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile Banner Ad (320x50) - HIGH CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Banner Advertising</p>
-                </div>
-
-                {/* Content Section 6: Advanced Techniques */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Advanced Link Optimization Techniques</h3>
-                    
-                    <div className="grid md:grid-cols-2 gap-8 mb-6">
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">🎨 Custom Branding</h4>
-                            <p className="text-gray-700 mb-4">
-                                Create branded short URLs that reflect your business identity and build trust with your audience.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Use your company name in URLs</li>
-                                <li>• Create memorable, short codes</li>
-                                <li>• Maintain consistency across campaigns</li>
-                                <li>• Build brand recognition</li>
-                            </ul>
-                        </div>
-                        
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">📱 Mobile Optimization</h4>
-                            <p className="text-gray-700 mb-4">
-                                Ensure your links work perfectly across all devices and platforms for maximum reach.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Test on multiple devices</li>
-                                <li>• Optimize for mobile browsers</li>
-                                <li>• Ensure fast loading times</li>
-                                <li>• Monitor mobile performance</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* HIGH CPM AD 6: Mobile In-Article Ad (High CPM) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-60 bg-gradient-to-r from-teal-100 to-cyan-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile In-Article Ad (300x250) - HIGH CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Content-Relevant Advertising</p>
-                </div>
-
-                {/* Content Section 7: ROI Optimization */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Maximizing Your ROI</h3>
-                    
-                    <p className="text-lg text-gray-700 mb-6">
-                        Learn how to get the most value from your link management efforts and maximize your return on investment.
-                    </p>
-
-                    <div className="grid md:grid-cols-3 gap-6 mb-6">
-                        <div className="bg-emerald-50 p-6 rounded-lg text-center">
-                            <h4 className="text-xl font-semibold text-emerald-800 mb-3">💰 Cost Optimization</h4>
-                            <p className="text-gray-700">Reduce costs while maintaining high performance and quality.</p>
-                        </div>
-                        <div className="bg-amber-50 p-6 rounded-lg text-center">
-                            <h4 className="text-xl font-semibold text-amber-800 mb-3">📈 Performance Scaling</h4>
-                            <p className="text-gray-700">Scale your campaigns efficiently as your business grows.</p>
-                        </div>
-                        <div className="bg-rose-50 p-6 rounded-lg text-center">
-                            <h4 className="text-xl font-semibold text-rose-800 mb-3">🎯 Conversion Focus</h4>
-                            <p className="text-gray-700">Focus on actions that drive real business results.</p>
-                        </div>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
-                        <h4 className="text-xl font-semibold text-gray-800 mb-3">🚀 Pro Tips for Success</h4>
-                        <ul className="space-y-2 text-gray-700">
-                            <li>• <strong>Test everything:</strong> A/B test your links, descriptions, and campaigns</li>
-                            <li>• <strong>Monitor trends:</strong> Stay updated with industry best practices</li>
-                            <li>• <strong>Optimize continuously:</strong> Always look for ways to improve performance</li>
-                            <li>• <strong>Focus on quality:</strong> Quality over quantity always wins</li>
-                        </ul>
-                    </div>
-                </div>
-
-                {/* HIGH CPM AD 7: Mobile Responsive Ad (High CPM) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-32 bg-gradient-to-r from-violet-100 to-purple-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile Responsive Ad (320x100) - HIGH CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Optimized Display</p>
-                </div>
-
-                {/* Content Section 8: Future Trends */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Future of Link Management</h3>
-                    
-                    <p className="text-lg text-gray-700 mb-6">
-                        Stay ahead of the curve by understanding emerging trends and technologies in link management.
-                    </p>
-
-                    <div className="space-y-6">
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">🤖 AI-Powered Analytics</h4>
-                            <p className="text-gray-700 mb-4">
-                                Artificial intelligence is revolutionizing how we analyze and optimize link performance. AI can predict trends, identify opportunities, and automate optimization processes.
-                            </p>
-                        </div>
-
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">🔗 Smart Link Technology</h4>
-                            <p className="text-gray-700 mb-4">
-                                Next-generation smart links that adapt to user behavior, device type, and location to provide the most relevant experience.
-                            </p>
-                        </div>
-
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">📊 Advanced Attribution</h4>
-                            <p className="text-gray-700 mb-4">
-                                Multi-touch attribution models that provide deeper insights into the customer journey and conversion paths.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* HIGH CPM AD 8: Mobile Banner Ad (High CPM) */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
-                    <div className="w-full h-20 bg-gradient-to-r from-emerald-100 to-green-100 rounded-lg flex items-center justify-center mb-4">
-                        <p className="text-gray-600 font-medium">Mobile Banner Ad (320x50) - HIGH CPM</p>
-                    </div>
-                    <p className="text-sm text-gray-500">Mobile Banner Advertising</p>
-                </div>
-
-                {/* Content Section 9: Case Studies & Success Stories */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Success Stories & Case Studies</h3>
-                    
-                    <p className="text-lg text-gray-700 mb-6">
-                        Learn from real-world examples of how businesses have successfully implemented link management strategies to achieve remarkable results.
-                    </p>
-
-                    <div className="space-y-8">
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg">
-                            <h4 className="text-xl font-semibold text-blue-800 mb-4">📈 E-commerce Success Story</h4>
-                            <p className="text-gray-700 mb-4">
-                                A leading e-commerce brand increased their conversion rate by 45% by implementing strategic link management. They used branded short URLs, tracked performance across different channels, and optimized based on real-time data.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• <strong>45% increase</strong> in conversion rate</li>
-                                <li>• <strong>3x improvement</strong> in click-through rates</li>
-                                <li>• <strong>60% reduction</strong> in marketing costs</li>
-                            </ul>
-                        </div>
-
-                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg">
-                            <h4 className="text-xl font-semibold text-green-800 mb-4">🎯 SaaS Company Transformation</h4>
-                            <p className="text-gray-700 mb-4">
-                                A SaaS company achieved 300% growth in user acquisition by implementing advanced link tracking and optimization strategies. They used A/B testing, personalized URLs, and comprehensive analytics.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• <strong>300% growth</strong> in user acquisition</li>
-                                <li>• <strong>2.5x improvement</strong> in user engagement</li>
-                                <li>• <strong>40% increase</strong> in customer lifetime value</li>
-                            </ul>
-                        </div>
-
-                        <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-lg">
-                            <h4 className="text-xl font-semibold text-purple-800 mb-4">📱 Mobile App Launch Success</h4>
-                            <p className="text-gray-700 mb-4">
-                                A mobile app startup achieved 500,000 downloads in their first month by leveraging smart link technology and cross-platform optimization. They used deep linking, QR codes, and social media integration.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• <strong>500,000 downloads</strong> in first month</li>
-                                <li>• <strong>85% retention rate</strong> after 30 days</li>
-                                <li>• <strong>4.8/5 star rating</strong> on app stores</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Content Section 10: Technical Implementation Guide */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Technical Implementation Guide</h3>
-                    
-                    <p className="text-lg text-gray-700 mb-6">
-                        Get detailed technical insights into implementing effective link management systems and optimizing for maximum performance.
-                    </p>
-
-                    <div className="grid md:grid-cols-2 gap-8 mb-6">
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">🔧 API Integration</h4>
-                            <p className="text-gray-700 mb-4">
-                                Learn how to integrate link management APIs into your existing systems for seamless automation and optimization.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• RESTful API endpoints</li>
-                                <li>• Webhook integration</li>
-                                <li>• Real-time data sync</li>
-                                <li>• Custom automation rules</li>
-                            </ul>
-                        </div>
-                        
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">📊 Data Analytics</h4>
-                            <p className="text-gray-700 mb-4">
-                                Implement comprehensive analytics to track performance, identify trends, and make data-driven decisions.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Custom dashboards</li>
-                                <li>• Real-time reporting</li>
-                                <li>• Predictive analytics</li>
-                                <li>• Performance alerts</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                        <h4 className="text-xl font-semibold text-gray-800 mb-3">🚀 Performance Optimization</h4>
-                        <div className="grid md:grid-cols-3 gap-4">
-                            <div>
-                                <h5 className="font-semibold text-gray-800 mb-2">Speed Optimization</h5>
-                                <ul className="text-sm text-gray-700 space-y-1">
-                                    <li>• CDN implementation</li>
-                                    <li>• Caching strategies</li>
-                                    <li>• Image optimization</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h5 className="font-semibold text-gray-800 mb-2">Security Measures</h5>
-                                <ul className="text-sm text-gray-700 space-y-1">
-                                    <li>• HTTPS enforcement</li>
-                                    <li>• Rate limiting</li>
-                                    <li>• Malware protection</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h5 className="font-semibold text-gray-800 mb-2">Scalability</h5>
-                                <ul className="text-sm text-gray-700 space-y-1">
-                                    <li>• Load balancing</li>
-                                    <li>• Database optimization</li>
-                                    <li>• Auto-scaling</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Content Section 11: Industry Best Practices */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800 mb-6">Industry Best Practices & Standards</h3>
-                    
-                    <p className="text-lg text-gray-700 mb-6">
-                        Discover the latest industry standards and best practices that leading companies use to maximize their link management effectiveness.
-                    </p>
-
-                    <div className="space-y-6">
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">📋 Quality Assurance</h4>
-                            <p className="text-gray-700 mb-4">
-                                Implement comprehensive quality assurance processes to ensure your links are always working, secure, and optimized for performance.
-                            </p>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <ul className="space-y-2 text-gray-700">
-                                    <li>• Regular link health checks</li>
-                                    <li>• Broken link monitoring</li>
-                                    <li>• Performance benchmarking</li>
-                                    <li>• Security vulnerability scans</li>
-                                </ul>
-                                <ul className="space-y-2 text-gray-700">
-                                    <li>• A/B testing protocols</li>
-                                    <li>• User experience audits</li>
-                                    <li>• Compliance verification</li>
-                                    <li>• Performance optimization</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 className="text-xl font-semibold text-gray-800 mb-4">🌐 Global Optimization</h4>
-                            <p className="text-gray-700 mb-4">
-                                Optimize your link management strategy for global audiences with multi-language support, regional optimization, and cultural considerations.
-                            </p>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• Multi-language URL support</li>
-                                <li>• Regional redirect optimization</li>
-                                <li>• Cultural content adaptation</li>
-                                <li>• Local SEO integration</li>
-                                <li>• International compliance</li>
-                            </ul>
-                        </div>
-
-                        <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-lg">
-                            <h4 className="text-xl font-semibold text-amber-800 mb-3">⭐ Pro Tips from Industry Experts</h4>
-                            <ul className="space-y-2 text-gray-700">
-                                <li>• <strong>Always test on multiple devices</strong> - Ensure compatibility across all platforms</li>
-                                <li>• <strong>Monitor performance continuously</strong> - Set up automated alerts for issues</li>
-                                <li>• <strong>Keep backups of important links</strong> - Maintain redundancy for critical URLs</li>
-                                <li>• <strong>Stay updated with trends</strong> - Follow industry leaders and adapt quickly</li>
-                                <li>• <strong>Focus on user experience</strong> - Speed and reliability are paramount</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Engagement Prompt */}
-                {showEngagementPrompt && !showScrollButton && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6 text-center">
-                        <h3 className="text-lg font-semibold text-yellow-800 mb-2">Quick Question</h3>
-                        <p className="text-yellow-700 mb-4">
-                            {engagementStep === 0 && "Are you finding our content helpful?"}
-                            {engagementStep === 1 && "Would you like to see more recommendations?"}
-                            {engagementStep === 2 && "Great! You're almost ready to continue."}
-                        </p>
-                        <button 
-                            onClick={handleEngagementClick}
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300"
-                        >
-                            {engagementStep === 0 && "Yes, it's helpful"}
-                            {engagementStep === 1 && "Yes, show me more"}
-                            {engagementStep === 2 && "Continue"}
-                        </button>
-                    </div>
-                )}
-
-                {/* Progress Circle */}
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
+      {/* Header */}
+      <div className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold">LinkMagik</h1>
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-300 space-y-1">
                 {progressStarted && (
-                    <div className="flex justify-center mb-8">
-                        <div className="relative w-24 h-24">
-                            <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
-                                <circle
-                                    cx="50"
-                                    cy="50"
-                                    r="40"
-                                    stroke="currentColor"
-                                    strokeWidth="8"
-                                    fill="transparent"
-                                    className="text-gray-200"
-                                />
-                                <circle
-                                    cx="50"
-                                    cy="50"
-                                    r="40"
-                                    stroke="currentColor"
-                                    strokeWidth="8"
-                                    fill="transparent"
-                                    strokeDasharray={`${2 * Math.PI * 40}`}
-                                    strokeDashoffset={`${2 * Math.PI * 40 * (1 - progress / 100)}`}
-                                    className="text-blue-500 transition-all duration-300"
-                                />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xl font-bold text-gray-800">{progress}%</span>
-                            </div>
-                        </div>
-                    </div>
+                  <div>Progress: {progress}%</div>
                 )}
-
-                {/* Final Content Section */}
-                <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-4">Ready to Continue?</h3>
-                    <p className="text-lg text-gray-600 mb-6">
-                        Thank you for exploring LinkMagik. We hope you found our platform helpful for your link management needs.
-                    </p>
-                    
-                    {showScrollButton ? (
-                        <button 
-                            onClick={handleScrollToBottom}
-                            className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
-                        >
-                            Start Progress & Continue
-                        </button>
-                    ) : progressStarted && !showContinue ? (
-                        <div className="text-center">
-                            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                            <p className="text-gray-600">Preparing your destination...</p>
-                        </div>
-                    ) : showContinue ? (
-                        <button 
-                            onClick={handleContinue}
-                            className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
-                        >
-                            Continue to Destination
-                        </button>
-                    ) : (
-                        <div className="text-center">
-                            <div className="w-16 h-16 border-4 border-gray-300 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                            <p className="text-gray-500">Loading content...</p>
-                        </div>
-                    )}
-                </div>
+                {showTimeProgress && (
+                  <div className="text-yellow-400">
+                    Time: {Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}
+                  </div>
+                )}
+                                 {readingProgress > 0 && (
+                   <div className="text-green-400">Reading: {readingProgress}%</div>
+                 )}
+                 {scrollDepth > 0 && (
+                   <div className="text-blue-400">Scroll: {scrollDepth}%</div>
+                 )}
+                 {timeSpent >= minTimeRequired && readingProgress >= 30 && scrollDepth >= 50 && (
+                   <div className="text-emerald-400 font-bold">🎯 Ready to Continue!</div>
+                 )}
+              </div>
+                             <div className="text-xs text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg text-center">
+                 <div>⏱️ Stay engaged for better experience</div>
+                 <div className="text-yellow-400 font-medium">Reading valuable content...</div>
+                 <div className="mt-1 text-xs">
+                   {timeSpent < minTimeRequired ? (
+                     <span>⏳ {minTimeRequired - timeSpent}s remaining</span>
+                   ) : (
+                     <span className="text-green-400">✅ Time requirement met!</span>
+                   )}
+                 </div>
+               </div>
             </div>
-
-            {/* Footer with Subtle Skip Button */}
-            <div className="bg-gray-50 border-t mt-12">
-                <div className="container mx-auto px-4 py-4">
-                    <div className="flex justify-between items-center">
-                        <div className="text-sm text-gray-500">
-                            © 2024 LinkMagik. All rights reserved.
-                        </div>
-                        <div className="text-right">
-                            {skipEnabled && (
-                                <button 
-                                    onClick={handleSkip}
-                                    className="text-xs text-gray-400 hover:text-gray-600 underline transition-colors duration-300"
-                                >
-                                    {skipText}
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    );
+      </div>
+
+      {/* Progress Bars */}
+      {progressStarted && (
+        <div className="space-y-2">
+          {/* Main Progress Bar */}
+          <div className="w-full bg-gray-700 h-2">
+            <div 
+              className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+          
+          {/* Time Progress Bar */}
+          {showTimeProgress && (
+            <div className="w-full bg-gray-700 h-2">
+              <div 
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 transition-all duration-300"
+                style={{ width: `${Math.min((timeSpent / minTimeRequired) * 100, 100)}%` }}
+              ></div>
+            </div>
+          )}
+          
+          {/* Reading Progress Bar */}
+          {readingProgress > 0 && (
+            <div className="w-full bg-gray-700 h-2">
+              <div 
+                className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 transition-all duration-300"
+                style={{ width: `${readingProgress}%` }}
+              ></div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Content Sections with Adsterra Ads */}
+      
+      {/* Section 1: URL Shortening Guide */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Complete Guide to URL Shortening</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            URL shortening is a technique used to create shorter URLs that redirect to longer ones. 
+            This is particularly useful for social media platforms, email marketing, and any situation 
+            where you need to share a long URL in a concise format.
+          </p>
+          
+          {/* Adsterra Banner Ad 1 */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-[100px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Benefits of URL Shortening</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Cleaner social media posts</li>
+                <li>• Better email deliverability</li>
+                <li>• Professional appearance</li>
+                <li>• Easy to remember</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Use Cases</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Social media marketing</li>
+                <li>• Email campaigns</li>
+                <li>• Print materials</li>
+                <li>• QR codes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Interstitial Ad */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-green-500 to-blue-500 h-[400px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold text-center">
+                Adsterra Interstitial Ad<br/>
+                (Full-screen mobile optimized)
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 2: Digital Marketing Tips */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Digital Marketing Strategies</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            Effective digital marketing requires a comprehensive approach that combines various 
+            strategies and channels. Understanding your audience and creating valuable content 
+            is key to success in today's digital landscape.
+          </p>
+
+          {/* Adsterra Native Ad 1 */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
+            <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 rounded-lg">
+              <h3 className="text-xl font-semibold mb-2">Boost Your Business</h3>
+              <p className="text-gray-200 mb-3">Discover proven strategies to grow your online presence</p>
+              <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium">
+                Learn More
+              </button>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Content Marketing</h3>
+              <p className="text-gray-300">Create valuable, relevant content that attracts and engages your target audience.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Social Media</h3>
+              <p className="text-gray-300">Build relationships and increase brand awareness through social platforms.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Email Marketing</h3>
+              <p className="text-gray-300">Nurture leads and drive conversions with targeted email campaigns.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Banner Ad 2 */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 h-[50px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 3: SEO Best Practices */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">SEO Best Practices for 2024</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            Search Engine Optimization continues to evolve with algorithm updates and changing 
+            user behavior. Staying current with SEO best practices is crucial for maintaining 
+            and improving your search rankings.
+          </p>
+
+          {/* Adsterra Push Notification Ad */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-yellow-500 to-orange-500 p-4 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="flex-1">
+                  <h4 className="font-semibold">Get Notifications</h4>
+                  <p className="text-sm text-gray-200">Stay updated with latest tips</p>
+                </div>
+                <button className="bg-white text-orange-600 px-3 py-1 rounded text-sm font-medium">
+                  Allow
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Technical SEO</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Page speed optimization</li>
+                <li>• Mobile-first indexing</li>
+                <li>• Core Web Vitals</li>
+                <li>• Schema markup</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Content Quality</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Comprehensive coverage</li>
+                <li>• User intent matching</li>
+                <li>• Regular updates</li>
+                <li>• Multimedia content</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Banner Ad 3 */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-teal-500 to-blue-500 h-[100px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 4: Mobile Optimization */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Mobile-First Design Principles</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            With mobile devices accounting for over 60% of web traffic, mobile-first design 
+            is no longer optional. Understanding mobile user behavior and optimizing for 
+            mobile experiences is crucial for success.
+          </p>
+
+          {/* Adsterra Native Ad 2 */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
+            <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-6 rounded-lg">
+              <h3 className="text-xl font-semibold mb-2">Mobile Success Guide</h3>
+              <p className="text-gray-200 mb-3">Learn how to optimize your business for mobile users</p>
+              <button className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-medium">
+                Get Started
+              </button>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Touch-Friendly Design</h3>
+              <p className="text-gray-300">Ensure all interactive elements are properly sized for touch input.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Fast Loading</h3>
+              <p className="text-gray-300">Optimize images, minimize HTTP requests, and use efficient coding.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Banner Ad 4 */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-pink-500 to-red-500 h-[50px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 5: Analytics & Tracking */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Analytics & Performance Tracking</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            Data-driven decision making is essential for business growth. Understanding your 
+            analytics and tracking key performance indicators helps you optimize your strategies 
+            and improve results.
+          </p>
+
+          {/* Adsterra Video Ad Placeholder */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-gray-700 to-gray-800 h-[250px] rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-white text-2xl">▶</span>
+                </div>
+                <span className="text-white font-semibold">Adsterra Video Ad</span>
+                <p className="text-gray-300 text-sm">(Pre-roll/Mid-roll optimized)</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Key Metrics</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Conversion rates</li>
+                <li>• Traffic sources</li>
+                <li>• User engagement</li>
+                <li>• Page performance</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Tools & Platforms</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Google Analytics</li>
+                <li>• Search Console</li>
+                <li>• Heat mapping</li>
+                <li>• A/B testing</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Optimization</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Regular monitoring</li>
+                <li>• Data analysis</li>
+                <li>• Strategy adjustment</li>
+                <li>• Performance improvement</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Banner Ad 5 */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-[100px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 6: Social Media Marketing */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Social Media Marketing Mastery</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            Social media has become the primary platform for brand building and customer engagement. 
+            Understanding platform-specific strategies and creating engaging content is key to 
+            social media success.
+          </p>
+
+          {/* Adsterra Rich Media Ad */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-6 rounded-lg">
+              <div className="text-center">
+                <h3 className="text-xl font-semibold mb-2">Interactive Experience</h3>
+                <p className="text-gray-200 mb-4">Engage with our interactive mobile ad</p>
+                <div className="flex space-x-3 justify-center">
+                  <button className="bg-white text-cyan-600 px-4 py-2 rounded-lg font-medium">
+                    Tap Here
+                  </button>
+                  <button className="bg-white/20 text-white px-4 py-2 rounded-lg font-medium">
+                    Swipe
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Platform Strategy</h3>
+              <p className="text-gray-300">Each social platform has unique features and audience behavior.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Content Creation</h3>
+              <p className="text-gray-300">Create valuable, shareable content that resonates with your audience.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Banner Ad 6 */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-violet-500 to-purple-500 h-[50px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 7: Email Marketing */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Email Marketing Excellence</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            Email marketing remains one of the most effective digital marketing channels with 
+            the highest ROI. Building quality email lists and creating compelling campaigns 
+            is essential for business growth.
+          </p>
+
+          {/* Adsterra Native Ad 3 */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
+            <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-6 rounded-lg">
+              <h3 className="text-xl font-semibold mb-2">Email Success Blueprint</h3>
+              <p className="text-gray-200 mb-3">Master the art of email marketing with proven strategies</p>
+              <button className="bg-white text-rose-600 px-4 py-2 rounded-lg font-medium">
+                Download Guide
+              </button>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">List Building</h3>
+              <p className="text-gray-300">Grow your email list with valuable content and incentives.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Campaign Design</h3>
+              <p className="text-gray-300">Create visually appealing and mobile-responsive email templates.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Automation</h3>
+              <p className="text-gray-300">Set up automated email sequences for better engagement.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Banner Ad 7 */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-[100px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 8: Conversion Optimization */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Conversion Rate Optimization</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            CRO focuses on improving the percentage of visitors who take desired actions on 
+            your website. Understanding user behavior and testing different approaches is 
+            crucial for maximizing conversions.
+          </p>
+
+          {/* Adsterra Push Notification Ad 2 */}
+          <div className="my-8 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-lime-500 to-green-500 p-4 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="flex-1">
+                  <h4 className="font-semibold">Conversion Tips</h4>
+                  <p className="text-sm text-gray-200">Get daily optimization tips</p>
+                </div>
+                <button className="bg-white text-lime-600 px-3 py-1 rounded text-sm font-medium">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">User Experience</h3>
+              <p className="text-gray-300">Optimize website usability and navigation for better conversions.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">A/B Testing</h3>
+              <p className="text-gray-300">Test different elements to find what works best for your audience.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Adsterra Banner Ad 8 */}
+      <div className="my-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="bg-white/10 rounded-lg border border-white/20 p-4">
+            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+            <div className="bg-gradient-to-r from-sky-500 to-blue-500 h-[50px] rounded-lg flex items-center justify-center">
+              <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 9: Future Trends */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Future of Digital Marketing</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            The digital marketing landscape is constantly evolving with new technologies and 
+            changing consumer behavior. Staying ahead of trends and adapting strategies is 
+            essential for long-term success.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Emerging Technologies</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Artificial Intelligence</li>
+                <li>• Voice Search</li>
+                <li>• Augmented Reality</li>
+                <li>• Blockchain Marketing</li>
+              </ul>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Consumer Behavior</h3>
+              <ul className="space-y-2 text-gray-300">
+                <li>• Privacy concerns</li>
+                <li>• Mobile-first approach</li>
+                <li>• Video content preference</li>
+                <li>• Personalization demand</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 10: Business Growth */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Scaling Your Business Online</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            Growing an online business requires strategic planning, consistent execution, and 
+            continuous optimization. Understanding your market and building strong customer 
+            relationships is key to sustainable growth.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Market Research</h3>
+              <p className="text-gray-300">Understand your target audience and market opportunities.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Customer Acquisition</h3>
+              <p className="text-gray-300">Implement effective strategies to attract new customers.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Retention Strategies</h3>
+              <p className="text-gray-300">Build loyalty and increase customer lifetime value.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 11: Success Stories */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6 text-center">Success Stories & Case Studies</h2>
+          <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+            Learning from successful businesses and understanding what works in different 
+            industries can provide valuable insights for your own growth strategy.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">E-commerce Success</h3>
+              <p className="text-gray-300">How online stores optimize for conversions and customer experience.</p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+              <h3 className="text-xl font-semibold mb-3">Service Business Growth</h3>
+              <p className="text-gray-300">Strategies for scaling service-based businesses online.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Engagement Prompt */}
+      {showEngagementPrompt && (
+        <div className="fixed bottom-4 right-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 max-w-sm">
+          <h3 className="font-semibold mb-2">Stay Engaged!</h3>
+          <p className="text-sm text-gray-300 mb-3">
+            {engagementStep === 0 && "Scroll down to read more valuable content"}
+            {engagementStep === 1 && "Learn about the latest digital marketing trends"}
+            {engagementStep === 2 && "Discover strategies to grow your business"}
+          </p>
+          <button
+            onClick={handleEngagement}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+          >
+            Got it
+          </button>
+        </div>
+      )}
+
+      {/* Motivational Message */}
+      {showMotivationalMessage && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center">
+          <div className="flex items-center space-x-2 justify-center">
+            <span className="text-xl">🚀</span>
+            <div>
+              <h3 className="font-semibold">Almost There!</h3>
+              <p className="text-sm">Keep reading to unlock amazing insights</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fun Fact Display */}
+      {funFact && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-lg text-center animate-pulse">
+          <div className="flex items-center space-x-2 justify-center">
+            <span className="text-lg">💡</span>
+            <p className="text-sm font-medium">{funFact}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Final Countdown Message */}
+      {timeSpent >= minTimeRequired - 10 && timeSpent < minTimeRequired && (
+        <div className="fixed top-32 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center animate-bounce">
+          <div className="flex items-center space-x-2 justify-center">
+            <span className="text-xl">🎉</span>
+            <div>
+              <h3 className="font-semibold">Almost Unlocked!</h3>
+              <p className="text-sm">Just a few more seconds...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Encouragement Message for Low Engagement */}
+      {timeSpent >= 20 && (readingProgress < 20 || scrollDepth < 20) && (
+        <div className="fixed top-40 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center animate-pulse">
+          <div className="flex items-center space-x-2 justify-center">
+            <span className="text-xl">📚</span>
+            <div>
+              <h3 className="font-semibold">Keep Reading!</h3>
+              <p className="text-sm">Scroll down to discover more valuable content</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Scroll Button */}
+      {showScrollButton && (
+        <button
+          onClick={handleScroll}
+          className="fixed bottom-4 left-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full p-3 hover:bg-white/20 transition-all duration-300 group"
+        >
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+          
+          {/* Tooltip */}
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black/80 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            Scroll to read more content
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/80"></div>
+          </div>
+        </button>
+      )}
+
+      {/* Continue Button */}
+      {showContinue && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+          {/* Celebration Message */}
+          <div className="mb-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg text-center animate-bounce">
+            <div className="flex items-center space-x-2 justify-center">
+              <span className="text-2xl">🎉</span>
+              <div>
+                <h3 className="font-bold text-lg">Congratulations!</h3>
+                <p className="text-sm">You've unlocked the continue button!</p>
+              </div>
+              <span className="text-2xl">🎉</span>
+            </div>
+          </div>
+          
+          <button
+            onClick={handleContinue}
+            className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            Continue to Destination →
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
