@@ -274,9 +274,9 @@ export default function AdPage() {
         )}
       </div>
 
-             {/* Pure Adsterra Ads - No Content */}
+             {/* Pure Ad-Maven Ads - No Content */}
        
-       {/* Adsterra Banner Ad 1 */}
+       {/* Ad-Maven Banner Ad 1 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
            <div className="bg-white/10 rounded-lg border border-white/20 p-4">

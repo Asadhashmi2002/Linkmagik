@@ -16,8 +16,8 @@ export default function RootLayout({
   return (
           <html lang="en" className="light">
         <head>
-          {/* Google AdSense Site Verification */}
-          <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
+          {/* Ad-Maven Site Verification */}
+          <meta name='admaven-placement' content='BqjaGqjCH' />
 
           <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
