@@ -18,6 +18,9 @@ export default function RootLayout({
         <head>
           {/* Ad-Maven Site Verification */}
           <meta name='admaven-placement' content='BqjaGqjCH' />
+          
+          {/* ExoClick Site Verification */}
+          <meta name="6a97888e-site-verification" content="62ab3f3165dca565bf71c7aa8a5fd33d" />
 
           <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

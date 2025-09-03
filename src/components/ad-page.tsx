@@ -274,14 +274,37 @@ export default function AdPage() {
         )}
       </div>
 
-             {/* Pure Ad-Maven Ads - No Cards, Simple Placeholders */}
+             {/* Pure Ad-Maven & ExoClick Ads - No Cards, Simple Placeholders */}
        
+       {/* ExoClick Banner Ad 1 */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-red-500 to-pink-500 h-[100px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">ExoClick Banner Ad (320x100)</span>
+           </div>
+         </div>
+       </div>
+
        {/* Ad-Maven Banner Ad 1 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
            <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
            <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-[100px] rounded-lg flex items-center justify-center">
              <span className="text-white font-semibold">Ad-Maven Banner Ad (320x100)</span>
+           </div>
+         </div>
+       </div>
+
+       {/* ExoClick Interstitial Ad */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-orange-500 to-red-500 h-[400px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold text-center">
+               ExoClick Interstitial Ad<br/>
+               (Full-screen mobile optimized)
+             </span>
            </div>
          </div>
        </div>
