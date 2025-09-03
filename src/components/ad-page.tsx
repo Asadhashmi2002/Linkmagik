@@ -223,22 +223,19 @@ export default function AdPage() {
         </div>
       </div>
 
-      {/* ExoClick Mobile Fullpage Interstitial Ad */}
+      {/* ExoClick Mobile Popunder Ad */}
       <div className="my-8 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
           <div className="bg-white/5 rounded-lg p-4 min-h-[400px] flex items-center justify-center">
-            {/* ExoClick Fullpage Interstitial Ad */}
-            <div className="w-full">
-              <script async type="application/javascript" src="https://a.pemsrv.com/ad-provider.js"></script> 
-              <ins className="eas6a97888e33" data-zoneid="5715824" style={{display: 'block', width: '100%', height: '400px'}}></ins> 
-              <script dangerouslySetInnerHTML={{__html: '(AdProvider = window.AdProvider || []).push({"serve": {}});'}}></script>
-            </div>
-            
-            {/* Fallback for mobile if ad doesn't load */}
-            <div className="text-center text-gray-400 text-sm mt-2">
-              <p>Loading fullpage interstitial...</p>
-              <p className="text-xs">Zone ID: 5715824</p>
+            {/* ExoClick Mobile Popunder Ad */}
+            <div className="w-full text-center">
+              <div className="text-white font-semibold text-lg mb-2">Mobile Popunder Ad</div>
+              <div className="text-gray-300 text-sm mb-4">Zone ID: 5715842</div>
+              <div className="text-gray-400 text-xs">
+                <p>This ad will trigger popunder on mobile devices</p>
+                <p>when users interact with the page</p>
+              </div>
             </div>
           </div>
         </div>
