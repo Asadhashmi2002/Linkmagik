@@ -274,77 +274,148 @@ export default function AdPage() {
         )}
       </div>
 
-             {/* Pure Ad-Maven Ads - No Content */}
+             {/* Pure Ad-Maven Ads - No Cards, Simple Placeholders */}
        
        {/* Ad-Maven Banner Ad 1 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-[100px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
-             </div>
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-[100px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x100)</span>
            </div>
          </div>
        </div>
 
-       {/* Adsterra Interstitial Ad */}
+       {/* Ad-Maven Interstitial Ad */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-green-500 to-blue-500 h-[400px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold text-center">
-                 Adsterra Interstitial Ad<br/>
-                 (Full-screen mobile optimized)
-               </span>
-             </div>
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-green-500 to-blue-500 h-[400px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold text-center">
+               Ad-Maven Interstitial Ad<br/>
+               (Full-screen mobile optimized)
+             </span>
            </div>
          </div>
        </div>
 
-       {/* Adsterra Native Ad 1 */}
+       {/* Ad-Maven Native Ad 1 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
-             <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 rounded-lg">
-               <h3 className="text-xl font-semibold mb-2">Boost Your Business</h3>
-               <p className="text-gray-200 mb-3">Discover proven strategies to grow your online presence</p>
-               <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium">
-                 Learn More
+           <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
+           <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 rounded-lg">
+             <h3 className="text-xl font-semibold mb-2">Boost Your Business</h3>
+             <p className="text-gray-200 mb-3">Discover proven strategies to grow your online presence</p>
+             <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium">
+               Learn More
+             </button>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Banner Ad 2 */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-orange-500 to-red-500 h-[50px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x50)</span>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Push Notification Ad */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-yellow-500 to-orange-500 p-4 rounded-lg">
+             <div className="flex items-center space-x-3">
+               <div className="w-3 h-3 bg-white rounded-full"></div>
+               <div className="flex-1">
+                 <h4 className="font-semibold">Get Notifications</h4>
+                 <p className="text-sm text-gray-200">Stay updated with latest tips</p>
+               </div>
+               <button className="bg-white text-orange-600 px-3 py-1 rounded text-sm font-medium">
+                 Allow
                </button>
              </div>
            </div>
          </div>
        </div>
 
-       {/* Adsterra Banner Ad 2 */}
+       {/* Ad-Maven Banner Ad 3 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-orange-500 to-red-500 h-[50px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-teal-500 to-blue-500 h-[100px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x100)</span>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Native Ad 2 */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
+           <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-6 rounded-lg">
+             <h3 className="text-xl font-semibold mb-2">Mobile Success Guide</h3>
+             <p className="text-gray-200 mb-3">Learn how to optimize your business for mobile users</p>
+             <button className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-medium">
+               Get Started
+             </button>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Banner Ad 4 */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-pink-500 to-red-500 h-[50px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x50)</span>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Video Ad Placeholder */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-gray-700 to-gray-800 h-[250px] rounded-lg flex items-center justify-center">
+             <div className="text-center">
+               <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                 <span className="text-white text-2xl">▶</span>
+               </div>
+               <span className="text-white font-semibold">Ad-Maven Video Ad</span>
+               <p className="text-gray-300 text-sm">(Pre-roll/Mid-roll optimized)</p>
              </div>
            </div>
          </div>
        </div>
 
-       {/* Adsterra Push Notification Ad */}
+       {/* Ad-Maven Banner Ad 5 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-yellow-500 to-orange-500 p-4 rounded-lg">
-               <div className="flex items-center space-x-3">
-                 <div className="w-3 h-3 bg-white rounded-full"></div>
-                 <div className="flex-1">
-                   <h4 className="font-semibold">Get Notifications</h4>
-                   <p className="text-sm text-gray-200">Stay updated with latest tips</p>
-                 </div>
-                 <button className="bg-white text-orange-600 px-3 py-1 rounded text-sm font-medium">
-                   Allow
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-[100px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x100)</span>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Rich Media Ad */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-6 rounded-lg">
+             <div className="text-center">
+               <h3 className="text-xl font-semibold mb-2">Interactive Experience</h3>
+               <p className="text-gray-200 mb-4">Engage with our interactive mobile ad</p>
+               <div className="flex space-x-3 justify-center">
+                 <button className="bg-white text-cyan-600 px-4 py-2 rounded-lg font-medium">
+                   Tap Here
+                 </button>
+                 <button className="bg-white/20 text-white px-4 py-2 rounded-lg font-medium">
+                   Swipe
                  </button>
                </div>
              </div>
@@ -352,168 +423,65 @@ export default function AdPage() {
          </div>
        </div>
 
-       {/* Adsterra Banner Ad 3 */}
+       {/* Ad-Maven Banner Ad 6 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-teal-500 to-blue-500 h-[100px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
-             </div>
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-violet-500 to-purple-500 h-[50px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x50)</span>
            </div>
          </div>
        </div>
 
-       {/* Adsterra Native Ad 2 */}
+       {/* Ad-Maven Native Ad 3 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
-             <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-6 rounded-lg">
-               <h3 className="text-xl font-semibold mb-2">Mobile Success Guide</h3>
-               <p className="text-gray-200 mb-3">Learn how to optimize your business for mobile users</p>
-               <button className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-medium">
-                 Get Started
+           <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
+           <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-6 rounded-lg">
+             <h3 className="text-xl font-semibold mb-2">Email Success Blueprint</h3>
+             <p className="text-gray-200 mb-3">Master the art of email marketing with proven strategies</p>
+             <button className="bg-white text-rose-600 px-4 py-2 rounded-lg font-medium">
+               Download Guide
+             </button>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Banner Ad 7 */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-[100px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x100)</span>
+           </div>
+         </div>
+       </div>
+
+       {/* Ad-Maven Push Notification Ad 2 */}
+       <div className="my-8 px-4">
+         <div className="container mx-auto max-w-4xl">
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-lime-500 to-green-500 p-4 rounded-lg">
+             <div className="flex items-center space-x-3">
+               <div className="w-3 h-3 bg-white rounded-full"></div>
+               <div className="flex-1">
+                 <h4 className="font-semibold">Conversion Tips</h4>
+                 <p className="text-sm text-gray-200">Get daily optimization tips</p>
+               </div>
+               <button className="bg-white text-lime-600 px-3 py-1 rounded text-sm font-medium">
+                 Subscribe
                </button>
              </div>
            </div>
          </div>
        </div>
 
-       {/* Adsterra Banner Ad 4 */}
+       {/* Ad-Maven Banner Ad 8 */}
        <div className="my-8 px-4">
          <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-pink-500 to-red-500 h-[50px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Video Ad Placeholder */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-gray-700 to-gray-800 h-[250px] rounded-lg flex items-center justify-center">
-               <div className="text-center">
-                 <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                   <span className="text-white text-2xl">▶</span>
-                 </div>
-                 <span className="text-white font-semibold">Adsterra Video Ad</span>
-                 <p className="text-gray-300 text-sm">(Pre-roll/Mid-roll optimized)</p>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Banner Ad 5 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-[100px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Rich Media Ad */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-6 rounded-lg">
-               <div className="text-center">
-                 <h3 className="text-xl font-semibold mb-2">Interactive Experience</h3>
-                 <p className="text-gray-200 mb-4">Engage with our interactive mobile ad</p>
-                 <div className="flex space-x-3 justify-center">
-                   <button className="bg-white text-cyan-600 px-4 py-2 rounded-lg font-medium">
-                     Tap Here
-                   </button>
-                   <button className="bg-white/20 text-white px-4 py-2 rounded-lg font-medium">
-                     Swipe
-                   </button>
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Banner Ad 6 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-violet-500 to-purple-500 h-[50px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Native Ad 3 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Sponsored Content</div>
-             <div className="bg-gradient-to-r from-rose-500 to-pink-500 p-6 rounded-lg">
-               <h3 className="text-xl font-semibold mb-2">Email Success Blueprint</h3>
-               <p className="text-gray-200 mb-3">Master the art of email marketing with proven strategies</p>
-               <button className="bg-white text-rose-600 px-4 py-2 rounded-lg font-medium">
-                 Download Guide
-               </button>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Banner Ad 7 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-[100px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x100)</span>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Push Notification Ad 2 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-lime-500 to-green-500 p-4 rounded-lg">
-               <div className="flex items-center space-x-3">
-                 <div className="w-3 h-3 bg-white rounded-full"></div>
-                 <div className="flex-1">
-                   <h4 className="font-semibold">Conversion Tips</h4>
-                   <p className="text-sm text-gray-200">Get daily optimization tips</p>
-                 </div>
-                 <button className="bg-white text-lime-600 px-3 py-1 rounded text-sm font-medium">
-                   Subscribe
-                 </button>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       {/* Adsterra Banner Ad 8 */}
-       <div className="my-8 px-4">
-         <div className="container mx-auto max-w-4xl">
-           <div className="bg-white/10 rounded-lg border border-white/20 p-4">
-             <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-gradient-to-r from-sky-500 to-blue-500 h-[50px] rounded-lg flex items-center justify-center">
-               <span className="text-white font-semibold">Adsterra Banner Ad (320x50)</span>
-             </div>
+           <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
+           <div className="bg-gradient-to-r from-sky-500 to-blue-500 h-[50px] rounded-lg flex items-center justify-center">
+             <span className="text-white font-semibold">Ad-Maven Banner Ad (320x50)</span>
            </div>
          </div>
        </div>
