@@ -53,39 +53,40 @@ export default function AdPage() {
     };
   }, [scrollDepth, showFirstButton, firstButtonClicked, firstTimerActive, showSecondButton]);
 
-  // Mobile-specific ad loading effect
+  // Enhanced ad loading effect for all devices
   useEffect(() => {
-    // Force ad reload on mobile devices
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    // Force ad reload on all devices with proper timing
+    const loadAds = () => {
+      // Load ExoClick ads
+      if ((window as any).AdProvider) {
+        (window as any).AdProvider.push({"serve": {}});
+      }
+      
+      // Force reload for mobile devices
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        // Multiple reload attempts for mobile
+        setTimeout(() => {
+          if ((window as any).AdProvider) {
+            (window as any).AdProvider.push({"serve": {}});
+          }
+        }, 2000);
+        
+        setTimeout(() => {
+          if ((window as any).AdProvider) {
+            (window as any).AdProvider.push({"serve": {}});
+          }
+        }, 5000);
+      }
+    };
+
+    // Initial load
+    loadAds();
     
-    if (isMobile) {
-      // Delay ad loading slightly for mobile
-      const mobileAdTimer = setTimeout(() => {
-        if ((window as any).AdProvider) {
-          (window as any).AdProvider.push({"serve": {}});
-        }
-      }, 1000);
-
-      // Force push notifications ad reload for mobile
-      const pushAdTimer = setTimeout(() => {
-        if ((window as any).AdProvider) {
-          (window as any).AdProvider.push({"serve": {}});
-        }
-      }, 2000);
-
-      // Force fullpage interstitial ad reload for mobile
-      const interstitialTimer = setTimeout(() => {
-        if ((window as any).AdProvider) {
-          (window as any).AdProvider.push({"serve": {}});
-        }
-      }, 3000);
-
-      return () => {
-        clearTimeout(mobileAdTimer);
-        clearTimeout(pushAdTimer);
-        clearTimeout(interstitialTimer);
-      };
-    }
+    // Reload ads every 10 seconds to ensure they display
+    const adInterval = setInterval(loadAds, 10000);
+    
+    return () => clearInterval(adInterval);
   }, []);
 
   // First timer effect (15 seconds)
@@ -399,6 +400,23 @@ export default function AdPage() {
         >
           {firstTimerActive ? `Wait ${firstTimer} seconds...` : 
            firstButtonClicked && !firstTimerActive ? 'Scroll to bottom' : 'Start'}
+        </button>
+      </div>
+
+      {/* Debug: Manual Ad Load Button */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          onClick={() => {
+            if ((window as any).AdProvider) {
+              (window as any).AdProvider.push({"serve": {}});
+              alert('Ads reloaded! Check console for details.');
+            } else {
+              alert('AdProvider not found. Ads may not be loading properly.');
+            }
+          }}
+          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium"
+        >
+          🔄 Reload Ads
         </button>
       </div>
 
