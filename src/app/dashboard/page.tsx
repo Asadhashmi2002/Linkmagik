@@ -145,6 +145,23 @@ export default function Dashboard() {
             <p className="text-sm text-gray-400">Mobile Optimized Banner Ad</p>
           </div>
         </div>
+
+        {/* Footer */}
+        <footer className="mt-16 pt-8 border-t border-white/20">
+          <div className="text-center space-y-4">
+            <div className="flex justify-center space-x-6 text-sm">
+              <a href="/privacy" className="text-gray-400 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+              <a href="/terms" className="text-gray-400 hover:text-white transition-colors">
+                Terms of Service
+              </a>
+            </div>
+            <p className="text-sm text-gray-500">
+              © 2024 LinkMagik. All rights reserved.
+            </p>
+          </div>
+        </footer>
       </div>
 
       <style jsx>{`
