@@ -123,6 +123,23 @@ export default function AdPage() {
     };
   }, []);
 
+  // Mobile-specific ad loading effect
+  useEffect(() => {
+    // Force ad reload on mobile devices
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Delay ad loading slightly for mobile
+      const mobileAdTimer = setTimeout(() => {
+        if ((window as any).AdProvider) {
+          (window as any).AdProvider.push({"serve": {}});
+        }
+      }, 1000);
+
+      return () => clearTimeout(mobileAdTimer);
+    }
+  }, []);
+
      // First timer effect (15 seconds)
    useEffect(() => {
      if (firstTimerActive && firstTimer > 0) {
@@ -400,17 +417,27 @@ export default function AdPage() {
          </div>
        </div>
 
-                       {/* ExoClick Real Video Ad */}
+                       {/* ExoClick Real Video Ad - Mobile Optimized */}
          <div className="my-8 px-4">
            <div className="container mx-auto max-w-4xl">
              <div className="text-center text-gray-400 text-sm mb-2">Advertisement</div>
-             <div className="bg-white/5 rounded-lg p-4">
-               <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
-               <ins className="eas6a97888e31" data-zoneid="5715762"></ins> 
-               <script dangerouslySetInnerHTML={{__html: '(AdProvider = window.AdProvider || []).push({"serve": {}});'}}></script>
+             <div className="bg-white/5 rounded-lg p-4 min-h-[300px] flex items-center justify-center">
+               {/* Mobile-specific ad container */}
+               <div className="w-full">
+                 <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script> 
+                 <ins className="eas6a97888e31" data-zoneid="5715762" style={{display: 'block', width: '100%', height: '300px'}}></ins> 
+                 <script dangerouslySetInnerHTML={{__html: '(AdProvider = window.AdProvider || []).push({"serve": {}});'}}></script>
+               </div>
+               
+               {/* Fallback for mobile if ad doesn't load */}
+               <div className="text-center text-gray-400 text-sm mt-2">
+                 <p>Loading video advertisement...</p>
+                 <p className="text-xs">If ad doesn't appear, please refresh the page</p>
+               </div>
              </div>
            </div>
          </div>
+         
 
         {/* Ad-Maven Video Ad Placeholder */}
         <div className="my-8 px-4">
