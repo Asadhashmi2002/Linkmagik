@@ -62,18 +62,21 @@ export default function AdPage() {
       setShowMotivationalMessage(true);
     }, 30000);
 
-    // Show fun facts every 20 seconds
-    const funFactTimer = setInterval(() => {
-      const facts = [
-        "💡 Did you know? Mobile users spend 70% more time on mobile-optimized sites",
-        "🚀 Pro tip: URL shortening can increase click-through rates by up to 34%",
-        "📱 Mobile-first design improves conversion rates by 64%",
-        "🎯 Native ads perform 8x better than traditional banner ads",
-        "⚡ Fast-loading pages have 70% higher conversion rates"
-      ];
-      setFunFact(facts[funFactIndex % facts.length]);
-      setFunFactIndex(prev => prev + 1);
-    }, 20000);
+           // Show fun facts every 20 seconds
+       const funFactTimer = setInterval(() => {
+         const facts = [
+           "💡 Did you know? Mobile users spend 70% more time on mobile-optimized sites",
+           "🚀 Pro tip: URL shortening can increase click-through rates by up to 34%",
+           "📱 Mobile-first design improves conversion rates by 64%",
+           "🎯 Native ads perform 8x better than traditional banner ads",
+           "⚡ Fast-loading pages have 70% higher conversion rates",
+           "💰 High-engagement users generate 3x more ad revenue",
+           "📊 Scroll depth directly impacts ad viewability rates",
+           "🎯 Interactive ads have 47% higher engagement rates"
+         ];
+         setFunFact(facts[funFactIndex % facts.length]);
+         setFunFactIndex(prev => prev + 1);
+       }, 20000);
 
     // Track scroll depth
     const handleScroll = () => {
@@ -204,19 +207,13 @@ export default function AdPage() {
                  {showFirstButton && !firstButtonClicked && (
                    <div className="text-emerald-400 font-bold">🎯 First Button Ready!</div>
                  )}
-                 {firstTimerActive && (
-                   <div className="text-orange-400 font-bold">⏱️ First Timer: {firstTimer}s</div>
-                 )}
-                 {showSecondButton && !secondButtonClicked && (
-                   <div className="text-emerald-400 font-bold">🎯 Second Button Ready!</div>
-                 )}
-                 {secondTimerActive && (
-                   <div className="text-orange-400 font-bold">⏱️ Second Timer: {secondTimer}s</div>
-                 )}
+                                   {showSecondButton && !secondButtonClicked && (
+                    <div className="text-emerald-400 font-bold">🎯 Second Button Ready!</div>
+                  )}
                </div>
                              <div className="text-xs text-gray-400 bg-gray-800/50 px-3 py-2 rounded-lg text-center">
                  <div>⏱️ Stay engaged for better experience</div>
-                 <div className="text-yellow-400 font-medium">Reading valuable content...</div>
+                 <div className="text-yellow-400 font-medium">Viewing advertisements...</div>
                  <div className="mt-1 text-xs">
                    {!showFirstButton ? (
                      <span>⏳ Scroll to 30% to unlock first button</span>
@@ -513,36 +510,36 @@ export default function AdPage() {
          </div>
        </div>
 
-      {/* Engagement Prompt */}
-      {showEngagementPrompt && (
-        <div className="fixed bottom-4 right-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 max-w-sm">
-          <h3 className="font-semibold mb-2">Stay Engaged!</h3>
-          <p className="text-sm text-gray-300 mb-3">
-            {engagementStep === 0 && "Scroll down to read more valuable content"}
-            {engagementStep === 1 && "Learn about the latest digital marketing trends"}
-            {engagementStep === 2 && "Discover strategies to grow your business"}
-          </p>
-          <button
-            onClick={handleEngagement}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
-          >
-            Got it
-          </button>
-        </div>
-      )}
+             {/* Engagement Prompt */}
+       {showEngagementPrompt && (
+         <div className="fixed bottom-4 right-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 max-w-sm">
+           <h3 className="font-semibold mb-2">Stay Engaged!</h3>
+           <p className="text-sm text-gray-300 mb-3">
+             {engagementStep === 0 && "Scroll down to view more advertisements"}
+             {engagementStep === 1 && "Keep scrolling to unlock the next step"}
+             {engagementStep === 2 && "Almost there! Complete the engagement"}
+           </p>
+           <button
+             onClick={handleEngagement}
+             className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+           >
+             Got it
+           </button>
+         </div>
+       )}
 
-      {/* Motivational Message */}
-      {showMotivationalMessage && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center">
-          <div className="flex items-center space-x-2 justify-center">
-            <span className="text-xl">🚀</span>
-            <div>
-              <h3 className="font-semibold">Almost There!</h3>
-              <p className="text-sm">Keep reading to unlock amazing insights</p>
-            </div>
-          </div>
-        </div>
-      )}
+             {/* Motivational Message */}
+       {showMotivationalMessage && (
+         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center">
+           <div className="flex items-center space-x-2 justify-center">
+             <span className="text-xl">🚀</span>
+             <div>
+               <h3 className="font-semibold">Almost There!</h3>
+               <p className="text-sm">Keep scrolling to unlock the next step</p>
+             </div>
+           </div>
+         </div>
+       )}
 
       {/* Fun Fact Display */}
       {funFact && (
@@ -554,43 +551,20 @@ export default function AdPage() {
         </div>
       )}
 
-      {/* Timer Countdown Messages */}
-      {firstTimerActive && firstTimer <= 5 && (
-        <div className="fixed top-32 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center animate-bounce">
-          <div className="flex items-center space-x-2 justify-center">
-            <span className="text-xl">⏰</span>
-            <div>
-              <h3 className="font-semibold">First Timer Almost Done!</h3>
-              <p className="text-sm">Just {firstTimer} seconds left...</p>
-            </div>
-          </div>
-        </div>
-      )}
+      
 
-      {secondTimerActive && secondTimer <= 5 && (
-        <div className="fixed top-32 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center animate-bounce">
-          <div className="flex items-center space-x-2 justify-center">
-            <span className="text-xl">⏰</span>
-            <div>
-              <h3 className="font-semibold">Second Timer Almost Done!</h3>
-              <p className="text-sm">Just {secondTimer} seconds left...</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Encouragement Message for Low Engagement */}
-      {timeSpent >= 20 && (readingProgress < 20 || scrollDepth < 20) && (
-        <div className="fixed top-40 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center animate-pulse">
-          <div className="flex items-center space-x-2 justify-center">
-            <span className="text-xl">📚</span>
-            <div>
-              <h3 className="font-semibold">Keep Reading!</h3>
-              <p className="text-sm">Scroll down to discover more valuable content</p>
-            </div>
-          </div>
-        </div>
-      )}
+             {/* Encouragement Message for Low Engagement */}
+       {timeSpent >= 20 && scrollDepth < 20 && (
+         <div className="fixed top-40 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg max-w-md text-center animate-pulse">
+           <div className="flex items-center space-x-2 justify-center">
+             <span className="text-xl">📱</span>
+             <div>
+               <h3 className="font-semibold">Keep Scrolling!</h3>
+               <p className="text-sm">Scroll down to view more advertisements</p>
+             </div>
+           </div>
+         </div>
+       )}
 
       {/* Scroll Button */}
       {showScrollButton && (
@@ -602,11 +576,11 @@ export default function AdPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
           
-          {/* Tooltip */}
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black/80 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-            Scroll to read more content
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/80"></div>
-          </div>
+                     {/* Tooltip */}
+           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black/80 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+             Scroll to view more ads
+             <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/80"></div>
+           </div>
         </button>
       )}
 
@@ -626,12 +600,17 @@ export default function AdPage() {
             </div>
           </div>
           
-          <button
-            onClick={handleFirstButton}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-          >
-            Start First Timer (15s) →
-          </button>
+                     <button
+             onClick={handleFirstButton}
+             disabled={firstTimerActive}
+             className={`px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 transform ${
+               firstTimerActive 
+                 ? 'bg-gray-500 cursor-not-allowed text-gray-300' 
+                 : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white hover:shadow-xl hover:scale-105'
+             }`}
+           >
+             {firstTimerActive ? `⏱️ First Timer: ${firstTimer}s` : 'Start First Timer (15s) →'}
+           </button>
         </div>
       )}
 
@@ -649,12 +628,17 @@ export default function AdPage() {
             </div>
           </div>
           
-          <button
-            onClick={handleSecondButton}
-            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-          >
-            Start Second Timer (20s) →
-          </button>
+                     <button
+             onClick={handleSecondButton}
+             disabled={secondTimerActive}
+             className={`px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition-all duration-300 transform ${
+               secondTimerActive 
+                 ? 'bg-gray-500 cursor-not-allowed text-gray-300' 
+                 : 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white hover:shadow-xl hover:scale-105'
+             }`}
+           >
+             {secondTimerActive ? `⏱️ Second Timer: ${secondTimer}s` : 'Start Second Timer (20s) →'}
+           </button>
         </div>
       )}
 
